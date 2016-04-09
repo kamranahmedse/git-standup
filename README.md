@@ -1,7 +1,8 @@
 # git-standup
 
 > Recall what you did on the last working day. 
-> Psst! or be nosy and find what some "other guy" in your team did ;)
+>
+> Psst! or be nosy and find what some "other guy" in your team did ;-)
 
 ## Install
 
@@ -19,7 +20,7 @@ For the default usage, all you have to do is run
 $ git standup
 ```
 
-![git standup](http://i.imgur.com/EpwkZZq.gif)
+![git standup](http://i.imgur.com/wyo4s9E.gif)
 
 This will show you all your commits since the last working day. However, if you want to find out someone else's commits do
 
