@@ -19,7 +19,7 @@ For the default usage, all you have to do is run
 $ git standup
 ```
 
-![git standup](http://i.imgur.com/An0xXdA.gif)
+![git standup](http://i.imgur.com/EpwkZZq.gif)
 
 This will show you all your commits since the last working day. However, if you want to find out someone else's commits do
 
