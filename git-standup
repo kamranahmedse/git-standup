@@ -1,0 +1,29 @@
+#!/bin/sh
+
+if [ $# -gt 2 ] ; then
+  >&2 echo "Usage: $0 [weekstart-weekend] [fullname]\nExample: $0 \"John Doe\" MON-FRI"
+  exit 1
+fi
+
+
+AUTHOR=${2:-"`git config user.name`"}
+
+WEEKSTART="$( cut -d '-' -f 1 <<< "$1" )";
+WEEKEND="$( cut -d '-' -f 2 <<< "$1" )";
+
+
+WEEKSTART=${WEEKSTART:="Mon"}
+WEEKEND=${WEEKEND:="Fri"}
+
+
+since=yesterday
+
+# Case in-sensitive comparison
+shopt -s nocasematch
+
+# If start of the week
+if [[ $WEEKSTART == "$(date +%a)" ]] ; then 
+  since="last $WEEKEND";
+fi
+
+git log --since "$since" --all --abbrev-commit --no-merges --oneline --committer="$AUTHOR" --pretty=format:'%Cred%h%Creset - %s %Cgreen(%cr) %C(bold blue)<%an>%Creset'
