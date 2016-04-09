@@ -1,8 +1,6 @@
 # git-standup
 
-> Recall what you did on the last working day. 
->
-> Psst! or be nosy and find what some "other guy" in your team did ;-)
+> Recall what you did on the last working day.
 
 ## Install
 
