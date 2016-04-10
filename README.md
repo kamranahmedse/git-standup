@@ -34,3 +34,8 @@ If you want to change this, like I want because here in Dubai working days are n
 ```bash
 $ git standup "John Doe" SUN-THU
 ```
+
+
+## License
+
+MIT © [Kamran Ahmed](https://kamranahmed.info)
