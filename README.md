@@ -38,4 +38,4 @@ $ git standup "John Doe" SUN-THU
 
 ## License
 
-MIT © [Kamran Ahmed](https://kamranahmed.info)
+MIT © [Kamran Ahmed](http://kamranahmed.info)
