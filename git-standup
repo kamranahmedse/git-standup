@@ -6,10 +6,10 @@ if [ $# -gt 2 ] ; then
 fi
 
 
-AUTHOR=${2:-"`git config user.name`"}
+AUTHOR=${1:-"`git config user.name`"}
 
-WEEKSTART="$( cut -d '-' -f 1 <<< "$1" )";
-WEEKEND="$( cut -d '-' -f 2 <<< "$1" )";
+WEEKSTART="$( cut -d '-' -f 1 <<< "$2" )";
+WEEKEND="$( cut -d '-' -f 2 <<< "$2" )";
 
 
 WEEKSTART=${WEEKSTART:="Mon"}
