@@ -31,7 +31,7 @@ Open a directory having multiple repositories and run
 $ git standup
 ```
 
-![git standup](http://i.imgur.com/hPw33Yr.gif)
+![git standup](http://i.imgur.com/RT25cT9.gif)
 
 This will show you all your commits since the last working day in all the repositories inside. 
 
