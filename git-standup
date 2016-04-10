@@ -26,4 +26,19 @@ if [[ $WEEKSTART == "$(date +%a)" ]] ; then
   since="last $WEEKEND";
 fi
 
-git log --since "$since" --all --abbrev-commit --no-merges --oneline --committer="$AUTHOR" --pretty=format:'%Cred%h%Creset - %s %Cgreen(%cr) %C(bold blue)<%an>%Creset'
+# If not in a repo, iterate through first level of folders
+if [ ! -d ".git" ]; then
+	for d in */ ; do
+		cd $d
+		if [ -d ".git" ]; then
+			GITOUT=`git log --since "$since" --all --abbrev-commit --no-merges --oneline --committer="$AUTHOR" --pretty=format:' %Cred%h%Creset - %s %Cgreen(%cr) %C(bold blue)<%an>%Creset'`
+			# Only output if there is some activity
+			if [ ! -z "$GITOUT" ];  then
+				echo "$d\n$GITOUT"
+			fi
+		fi
+		cd ..
+	done
+else
+	git log --since "$since" --all --abbrev-commit --no-merges --oneline --committer="$AUTHOR" --pretty=format:'%Cred%h%Creset - %s %Cgreen(%cr) %C(bold blue)<%an>%Creset'
+fi
