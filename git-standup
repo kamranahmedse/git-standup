@@ -1,48 +1,58 @@
 #!/usr/bin/env bash
 
+
 if [ $# -gt 2 ] ; then
   >&2 echo "Usage: $0 [fullname] [weekstart-weekend]\nExample: $0 \"John Doe\" MON-FRI"
   exit 1
 fi
 
 
+BOLD=$(tput bold)
+UNDERLINE=$(tput smul)
+NORMAL=$(tput sgr0)
+
 AUTHOR=${1:-"`git config user.name`"}
 
 WEEKSTART="$( cut -d '-' -f 1 <<< "$2" )";
-WEEKEND="$( cut -d '-' -f 2 <<< "$2" )";
-
-
 WEEKSTART=${WEEKSTART:="Mon"}
+
+WEEKEND="$( cut -d '-' -f 2 <<< "$2" )";
 WEEKEND=${WEEKEND:="Fri"}
 
+SINCE="yesterday"
 
-since=yesterday
 
-# Case in-sensitive comparison
+## In case it is the start of week, we need to 
+## show the commits since the last weekend
 shopt -s nocasematch
-
-# If start of the week
 if [[ $WEEKSTART == "$(date +%a)" ]] ; then 
-  since="last $WEEKEND";
+  SINCE="last $WEEKEND";
 fi
 
-# If not in a repo, iterate through first level of folders
+## For when the command has been run in the directory
 if [ ! -d ".git" ]; then
-	for d in */ ; do
 
-		cd $d
+	## Iterate through all the top level directories inside 
+	## for repositories and show the standup data for them
+	for DIR in */ ; do
 
+		cd "$DIR"
+
+		## Show the detail only if it is a git repository
 		if [ -d ".git" ]; then
-			GITOUT=`git log --since "$since" --all --abbrev-commit --no-merges --oneline --committer="$AUTHOR" --pretty=format:'%Cred%h%Creset - %s %Cgreen(%cr) %C(bold blue)<%an>%Creset'`
 
-			# Only output if there is some activity
+			GITOUT=`git log --since "$SINCE" --all --abbrev-commit --no-merges --oneline --committer="$AUTHOR" --pretty=format:'%Cred%h%Creset - %s %Cgreen(%cr) %C(bold blue)<%an>%Creset'`
+
+			## Only output if there is some activity
 			if [ ! -z "$GITOUT" ];  then
-				echo "$d"
+				echo "${BOLD}${UNDERLINE}$DIR${NORMAL}"
 				echo "$GITOUT"
 			fi
 		fi
+
 		cd ..
 	done
+
 else
 	git log --since "$since" --all --abbrev-commit --no-merges --oneline --committer="$AUTHOR" --pretty=format:'%Cred%h%Creset - %s %Cgreen(%cr) %C(bold blue)<%an>%Creset'
 fi
