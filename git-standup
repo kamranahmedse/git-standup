@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env bash
 
 if [ $# -gt 2 ] ; then
   >&2 echo "Usage: $0 [weekstart-weekend] [fullname]\nExample: $0 \"John Doe\" MON-FRI"
