@@ -1,7 +1,7 @@
 #!/bin/sh
 
 if [ $# -gt 2 ] ; then
-  >&2 echo "Usage: $0 [weekstart-weekend] [fullname]\nExample: $0 MON-FRI \"John Doe\""
+  >&2 echo "Usage: $0 [fullname] [weekstart-weekend]\nExample: $0 \"John Doe\" MON-FRI"
   exit 1
 fi
 
