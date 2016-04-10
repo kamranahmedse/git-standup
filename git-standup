@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 if [ $# -gt 2 ] ; then
-  >&2 echo "Usage: $0 [weekstart-weekend] [fullname]\nExample: $0 \"John Doe\" MON-FRI"
+  >&2 echo "Usage: $0 [fullname] [weekstart-weekend]\nExample: $0 \"John Doe\" MON-FRI"
   exit 1
 fi
 
@@ -26,4 +26,23 @@ if [[ $WEEKSTART == "$(date +%a)" ]] ; then
   since="last $WEEKEND";
 fi
 
-git log --since "$since" --all --abbrev-commit --no-merges --oneline --committer="$AUTHOR" --pretty=format:'%Cred%h%Creset - %s %Cgreen(%cr) %C(bold blue)<%an>%Creset'
+# If not in a repo, iterate through first level of folders
+if [ ! -d ".git" ]; then
+	for d in */ ; do
+
+		cd $d
+
+		if [ -d ".git" ]; then
+			GITOUT=`git log --since "$since" --all --abbrev-commit --no-merges --oneline --committer="$AUTHOR" --pretty=format:'%Cred%h%Creset - %s %Cgreen(%cr) %C(bold blue)<%an>%Creset'`
+
+			# Only output if there is some activity
+			if [ ! -z "$GITOUT" ];  then
+				echo "$d"
+				echo "$GITOUT"
+			fi
+		fi
+		cd ..
+	done
+else
+	git log --since "$since" --all --abbrev-commit --no-merges --oneline --committer="$AUTHOR" --pretty=format:'%Cred%h%Creset - %s %Cgreen(%cr) %C(bold blue)<%an>%Creset'
+fi
