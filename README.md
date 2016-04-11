@@ -4,6 +4,14 @@
 
 ## Install
 
+You can install it either using CURL
+
+```bash
+$ curl -L https://raw.githubusercontent.com/kamranahmedse/git-standup/upgrade/install.sh | sudo sh
+```
+
+Or by cloning and manually installing it
+
 ```bash
 $ git clone https://github.com/kamranahmedse/git-standup.git
 $ cd git-standup
@@ -54,7 +62,6 @@ If you want to change this, like I want because here in Dubai working days are n
 ```bash
 $ git standup "John Doe" SUN-THU
 ```
-
 
 ## License
 
