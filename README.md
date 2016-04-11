@@ -7,7 +7,7 @@
 You can install it either using CURL
 
 ```bash
-$ curl -L https://raw.githubusercontent.com/kamranahmedse/git-standup/upgrade/install.sh | sudo sh
+$ curl -L https://raw.githubusercontent.com/kamranahmedse/git-standup/master/installer.sh | sudo sh
 ```
 
 Or by cloning and manually installing it
