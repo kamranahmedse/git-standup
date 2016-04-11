@@ -5,9 +5,36 @@ if [ $# -gt 2 ] ; then
   exit 1
 fi
 
-BOLD=$(tput bold)
-UNDERLINE=$(tput smul)
-NORMAL=$(tput sgr0)
+# Use colors, but only if connected to a terminal, and that terminal
+# supports them.
+if which tput >/dev/null 2>&1; then
+  ncolors=$(tput colors)
+fi
+if [[ -t 1 ]] && [[ -n "$ncolors" ]] && [[ "$ncolors" -ge 8 ]] ; then
+  RED="$(tput setaf 1)"
+  GREEN="$(tput setaf 2)"
+  YELLOW="$(tput setaf 3)"
+  BLUE="$(tput setaf 4)"
+  BOLD="$(tput bold)"
+  NORMAL="$(tput sgr0)"
+  BOLD=$(tput bold)
+  UNDERLINE=$(tput smul)
+  NORMAL=$(tput sgr0)
+else
+  RED=""
+  GREEN=""
+  YELLOW=""
+  BLUE=""
+  BOLD=""
+  NORMAL=""
+  BOLD=""
+  UNDERLINE=""
+  NORMAL=""
+fi
+
+# Only enable exit-on-error after the non-critical colorization stuff,
+# which may fail on systems lacking tput or terminfo
+set -e
 
 AUTHOR=${1:-"`git config user.name`"}
 
@@ -20,16 +47,16 @@ WEEKEND=${WEEKEND:="Fri"}
 SINCE="yesterday"
 
 
-## In case it is the start of week, we need to 
+## In case it is the start of week, we need to
 ## show the commits since the last weekend
 shopt -s nocasematch
-if [[ $WEEKSTART == "$(date +%a)" ]] ; then 
+if [[ $WEEKSTART == "$(date +%a)" ]] ; then
   SINCE="last $WEEKEND";
 fi
 
 ## For when the command has been run in a non-repo directory
-if [ ! -d ".git" ]; then
-    
+if [[ ! -d ".git" ]]; then
+
     ## Iterate through all the top level directories inside
     ## and look for any git repositories.
     for DIR in */ ; do
@@ -37,13 +64,13 @@ if [ ! -d ".git" ]; then
         cd "$DIR"
 
         ## Show the detail only if it is a git repository
-        if [ -d ".git" ]; then
+        if [[ -d ".git" ]] ; then
 
             GITOUT=`git log --since "$SINCE" --all --abbrev-commit --no-merges --oneline --committer="$AUTHOR" --pretty=format:'%Cred%h%Creset - %s %Cgreen(%cr) %C(bold blue)<%an>%Creset'`
 
             ## Only output if there is some activity
-            if [ ! -z "$GITOUT" ];  then
-                echo "${BOLD}${UNDERLINE}$DIR${NORMAL}"
+            if [[ ! -z "$GITOUT" ]] ;  then
+                echo "${BOLD}${UNDERLINE}${YELLOW}$DIR${NORMAL}"
                 echo "$GITOUT"
             fi
         fi
