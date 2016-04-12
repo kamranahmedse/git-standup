@@ -63,6 +63,10 @@ If you want to change this, like I want because here in Dubai working days are n
 $ git standup "John Doe" SUN-THU
 ```
 
+## Motivation
+
+We have daily standups at our workplace and to check my deeds of the day, I was used to using git log or checking the heat map on my github profile and it seemed to be a bit cumbersome. To automate it, I searched and came across some of [the](http://code.joejag.com/2013/everyday-git-aliases.html) [aliases](https://coderwall.com/p/f4shwg/git-for-daily-standup) [and](https://gist.github.com/pathikrit/fb75ba009960c4ed9ddf) [snippets](https://github.com/stephenmathieson/git-standup) that people had been using but none of them directly served my purpose and so I spent a little time over the weekend to write this utility. Previously, I wrote it just for me but then I went ahead and made it a bit more generic and put it on github for others to use. And this is how git-standup was born.
+
 ## License
 
 MIT © [Kamran Ahmed](http://kamranahmed.info)
