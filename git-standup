@@ -54,6 +54,15 @@ if [[ $WEEKSTART == "$(date +%a)" ]] ; then
   SINCE="last $WEEKEND";
 fi
 
+GIT_LOG_COMMAND="git --no-pager log \
+    --all
+    --no-merges
+    --since \"$SINCE\"
+    --author=\"$AUTHOR\"
+    --abbrev-commit
+    --oneline
+    --pretty=format:'%Cred%h%Creset - %s %Cgreen(%cr) %C(bold blue)<%an>%Creset'"
+
 ## For when the command has been run in a non-repo directory
 if [[ ! -d ".git" ]]; then
 
@@ -65,8 +74,7 @@ if [[ ! -d ".git" ]]; then
 
         ## Show the detail only if it is a git repository
         if [[ -d ".git" ]] ; then
-
-            GITOUT=`git log --since "$SINCE" --all --abbrev-commit --no-merges --oneline --committer="$AUTHOR" --pretty=format:'%Cred%h%Creset - %s %Cgreen(%cr) %C(bold blue)<%an>%Creset'`
+            GITOUT=$(eval ${GIT_LOG_COMMAND})
 
             ## Only output if there is some activity
             if [[ ! -z "$GITOUT" ]] ;  then
@@ -74,8 +82,9 @@ if [[ ! -d ".git" ]]; then
                 echo "$GITOUT"
             fi
         fi
+
         cd ..
     done
 else
-    git log --since "$SINCE" --all --abbrev-commit --no-merges --oneline --committer="$AUTHOR" --pretty=format:'%Cred%h%Creset - %s %Cgreen(%cr) %C(bold blue)<%an>%Creset'
+    eval ${GIT_LOG_COMMAND}
 fi
