@@ -1,8 +1,16 @@
 # git-standup
 
-> Recall what you did on the last working day ..or be nosy and find what some other guy did.
+> Recall what you did on the last working day ..or be nosy and find what someone else did.
 
 ## Install
+
+You can install it either using cURL
+
+```bash
+$ curl -L https://raw.githubusercontent.com/kamranahmedse/git-standup/master/installer.sh | sudo sh
+```
+
+Or by cloning and manually installing it
 
 ```bash
 $ git clone https://github.com/kamranahmedse/git-standup.git
@@ -54,7 +62,6 @@ If you want to change this, like I want because here in Dubai working days are n
 ```bash
 $ git standup "John Doe" SUN-THU
 ```
-
 
 ## License
 
