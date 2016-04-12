@@ -87,4 +87,5 @@ if [[ ! -d ".git" ]]; then
     done
 else
     eval ${GIT_LOG_COMMAND}
+    echo "" ## To avoid that ugly # icon representing the end of line
 fi
