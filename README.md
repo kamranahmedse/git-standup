@@ -18,6 +18,12 @@ $ cd git-standup
 $ sudo make install
 ```
 
+For uninstalling, open up the cloned directory and run
+
+```bash
+sudo make uninstall
+```
+
 ## Usage
 
 All you have to do is run `git standup` in a repository or a folder containing multiple repositories
