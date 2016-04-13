@@ -4,13 +4,7 @@
 
 ## Install
 
-You can install it either using CURL
-
-```bash
-$ curl -L https://raw.githubusercontent.com/kamranahmedse/git-standup/master/installer.sh | sudo sh
-```
-
-Or by cloning and manually installing it
+You can install it  by cloning and manually installing it
 
 ```bash
 $ git clone https://github.com/kamranahmedse/git-standup.git
