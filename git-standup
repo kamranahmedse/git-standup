@@ -70,12 +70,14 @@ if [[ ! -d ".git" ]]; then
 
         ## Show the detail only if it is a git repository
         if [[ -d ".git" ]] ; then
-            GITOUT=$(eval ${GIT_LOG_COMMAND})
-
-            ## Only output if there is some activity
-            if [[ ! -z "$GITOUT" ]] ;  then
-                echo "${BOLD}${UNDERLINE}${YELLOW}$DIR${NORMAL}"
-                echo "$GITOUT"
+            if GITOUT=$(eval ${GIT_LOG_COMMAND}); then
+              ## Only output if there is some activity
+              if [[ ! -z "$GITOUT" ]] ;  then
+                  echo "${BOLD}${UNDERLINE}${YELLOW}$DIR${NORMAL}"
+                  echo "$GITOUT"
+              fi
+            else
+              echo "Repository under $DIR could not be queried. Missing initial commit?" >&2
             fi
         fi
 
