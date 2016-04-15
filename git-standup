@@ -74,7 +74,11 @@ if [[ ! -d ".git" ]]; then
 
         ## Show the detail only if it is a git repository
         if [[ -d ".git" ]] ; then
-            GITOUT=$(eval ${GIT_LOG_COMMAND})
+            {
+              GITOUT=$(eval ${GIT_LOG_COMMAND} 2>/dev/null )
+            } || {
+              GITOUT=""
+            }
 
             ## Only output if there is some activity
             if [[ ! -z "$GITOUT" ]] ;  then
