@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 
-if [[ $# -gt 2 ]] ; then
-  >&2 echo "Usage: $0 [fullname] [weekstart-weekend]\nExample: $0 \"John Doe\" MON-FRI"
-  exit 1
-fi
+# if [[ $# -gt 2 ]] ; then
+#   >&2 echo "Usage: $0 [fullname] [weekstart-weekend]\nExample: $0 \"John Doe\" MON-FRI"
+#   exit 1
+# fi
 
 # Use colors, but only if connected to a terminal, and that terminal
 # supports them.
@@ -32,28 +32,45 @@ fi
 # which may fail on systems lacking tput or terminfo
 set -e
 
-AUTHOR=${1:-"`git config user.name`"}
 
-WEEKSTART="$( cut -d '-' -f 1 <<< "$2" )";
-WEEKSTART=${WEEKSTART:="Mon"}
-
-WEEKEND="$( cut -d '-' -f 2 <<< "$2" )";
-WEEKEND=${WEEKEND:="Fri"}
-
+## Set the necessary variables for standup
+AUTHOR=`git config user.name`
 SINCE="yesterday"
 
 
-## In case it is the start of week, we need to
-## show the commits since the last weekend
-shopt -s nocasematch
-if [[ $WEEKSTART == "$(date +%a)" ]] ; then
-  SINCE="last $WEEKEND";
+## Get any options `-d` for now
+while getopts "d::a::" opt; do
+    declare "option_$opt=${OPTARG:-0}"
+done
+
+if [[ $option_a ]] ; then
+  AUTHOR="$option_a"
 fi
+
+## If -d flag is there, use it's value for the since
+if [[ $option_d ]] && [[ $option_d -ne 0 ]] ; then
+  SINCE="$option_d days ago"
+else
+  ## -d flag is not there, go on with the normal processing
+  WEEKSTART="$( cut -d '-' -f 1 <<< "$2" )";
+  WEEKSTART=${WEEKSTART:="Mon"}
+
+  WEEKEND="$( cut -d '-' -f 2 <<< "$2" )";
+  WEEKEND=${WEEKEND:="Fri"}
+
+  ## In case it is the start of week, we need to
+  ## show the commits since the last weekend
+  shopt -s nocasematch
+  if [[ $WEEKSTART == "$(date +%a)" ]] ; then
+    SINCE="last $WEEKEND";
+  fi
+fi
+
 
 GIT_LOG_COMMAND="git --no-pager log \
     --all
     --no-merges
-    --since \"$SINCE\"
+    --since=\"$SINCE\"
     --author=\"$AUTHOR\"
     --abbrev-commit
     --oneline
