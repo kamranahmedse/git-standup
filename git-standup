@@ -6,10 +6,8 @@ while getopts "d::a::w::" opt; do
     declare "option_$opt=${OPTARG:-0}"
 done
 
-
-
 ## If some options were given but none of them were the ones that we allow 
-if [[ ! $option_a ]] && [[ ! $option_d ]] && [[ !$option_w ]] &&  [[ $# -gt 0 ]] ; then
+if [[ ! $option_a ]] && [[ ! $option_d ]] && [[ ! $option_w ]] &&  [[ $# -gt 0 ]] ; then
   >&2 echo -e "Usage: $0 [-a <author name>] [-w <weekstart-weekend>] [-d <days-ago>]\nExample: $0 -a \"John Doe\" -w \"MON-FRI\""
   exit 1
 fi
