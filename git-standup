@@ -1,9 +1,19 @@
 #!/usr/bin/env bash
 
-# if [[ $# -gt 2 ]] ; then
-#   >&2 echo "Usage: $0 [fullname] [weekstart-weekend]\nExample: $0 \"John Doe\" MON-FRI"
-#   exit 1
-# fi
+
+## Get the options and store them in variables
+while getopts "d::a::w::" opt; do
+    declare "option_$opt=${OPTARG:-0}"
+done
+
+
+
+## If some options were given but none of them were the ones that we allow 
+if [[ ! $option_a ]] && [[ ! $option_d ]] && [[ !$option_w ]] &&  [[ $# -gt 0 ]] ; then
+  >&2 echo "Usage: $0 [-a <author name>] [-w <weekstart-weekend>] [-d <days-ago>]\nExample: $0 -a \"John Doe\" -w \"MON-FRI\""
+  exit 1
+fi
+
 
 # Use colors, but only if connected to a terminal, and that terminal
 # supports them.
@@ -28,6 +38,7 @@ else
   NORMAL=""
 fi
 
+
 # Only enable exit-on-error after the non-critical colorization stuff,
 # which may fail on systems lacking tput or terminfo
 set -e
@@ -38,24 +49,20 @@ AUTHOR=`git config user.name`
 SINCE="yesterday"
 
 
-## Get any options `-d` for now
-while getopts "d::a::" opt; do
-    declare "option_$opt=${OPTARG:-0}"
-done
-
 if [[ $option_a ]] ; then
   AUTHOR="$option_a"
 fi
+
 
 ## If -d flag is there, use it's value for the since
 if [[ $option_d ]] && [[ $option_d -ne 0 ]] ; then
   SINCE="$option_d days ago"
 else
   ## -d flag is not there, go on with the normal processing
-  WEEKSTART="$( cut -d '-' -f 1 <<< "$2" )";
+  WEEKSTART="$( cut -d '-' -f 1 <<< "$option_w" )";
   WEEKSTART=${WEEKSTART:="Mon"}
 
-  WEEKEND="$( cut -d '-' -f 2 <<< "$2" )";
+  WEEKEND="$( cut -d '-' -f 2 <<< "$option_w" )";
   WEEKEND=${WEEKEND:="Fri"}
 
   ## In case it is the start of week, we need to
@@ -75,6 +82,7 @@ GIT_LOG_COMMAND="git --no-pager log \
     --abbrev-commit
     --oneline
     --pretty=format:'%Cred%h%Creset - %s %Cgreen(%cr) %C(bold blue)<%an>%Creset'"
+
 
 ## For when the command has been run in a non-repo directory
 if [[ ! -d ".git" ]]; then
