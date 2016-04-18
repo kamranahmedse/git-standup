@@ -20,11 +20,15 @@ $ sudo make install
 
 ## Usage
 
-All you have to do is run `git standup` in a repository or a folder containing multiple repositories
+```bash
+$ git-standup [-a <author name>] [-w <weekstart-weekend>] [-d <days-ago>]
+```
+
+For the basic usage, all you have to do is run `git standup` in a repository or a folder containing multiple repositories
 
 ## Single Repository Usage
 
-Head to the project repository and run
+To check all your personal commits from last working day, head to the project repository and run
 
 ```bash
 $ git standup
@@ -39,10 +43,9 @@ Open a directory having multiple repositories and run
 $ git standup
 ```
 
-![git standup](http://i.imgur.com/RT25cT9.gif)
+![git standup](http://i.imgur.com/4kJ0CMc.gif)
 
 This will show you all your commits since the last working day in all the repositories inside. 
-
 
 ## Stand someone else up
 
@@ -50,17 +53,42 @@ If you want to find out someone else's commits do
 
 ```bash
 # Considering their name on git is "John Doe"
-$ git standup "John Doe"
+$ git standup -a "John Doe"
 ```
-![git standup](http://i.imgur.com/N6r3SXA.gif)
+![git standup](http://i.imgur.com/sYICxW8.gif)
 
+## Commits from `n` days ago
+
+If you would like to show all your/someone else's commits from n days ago, you can do
+
+```bash
+# Show all my commits from 4 days ago
+$ git standup -d 4
+
+# Show all John Doe's commits from 5 days ago
+$ git standup -a "John Doe" -d 5
+```
+
+![git standup -d 5](http://i.imgur.com/j7Ma760.gif)
+
+
+## Changing the Weekdays
 
 By default, it considers that the work week starts on Monday and ends on Friday. So if you are running this on any day between Tuesday and Friday, it will show you your commits from the last day. However, if you are running this on Monday, it will show you all your commits since Friday.
 
 If you want to change this, like I want because here in Dubai working days are normally Sunday to Thursday, you will have to do the following
 
 ```bash
-$ git standup "John Doe" SUN-THU
+$ git standup -w "SUN-THU"
+```
+
+## Mixing options
+
+Of course you can mix the options together but please note that if you provide the number of days, it will override the weekdays configuration (`MON-FRI`) and will show you the commits specifically from `n` days ago.
+
+```bash
+# Show all the John Doe's commits from 5 days ago
+$ git standup -a "John Doe" -d 5
 ```
 
 ## Motivation
