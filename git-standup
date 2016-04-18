@@ -10,7 +10,7 @@ done
 
 ## If some options were given but none of them were the ones that we allow 
 if [[ ! $option_a ]] && [[ ! $option_d ]] && [[ !$option_w ]] &&  [[ $# -gt 0 ]] ; then
-  >&2 echo "Usage: $0 [-a <author name>] [-w <weekstart-weekend>] [-d <days-ago>]\nExample: $0 -a \"John Doe\" -w \"MON-FRI\""
+  >&2 echo -e "Usage: $0 [-a <author name>] [-w <weekstart-weekend>] [-d <days-ago>]\nExample: $0 -a \"John Doe\" -w \"MON-FRI\""
   exit 1
 fi
 
@@ -110,7 +110,17 @@ if [[ ! -d ".git" ]]; then
 
         cd ..
     done
+
 else
-    eval ${GIT_LOG_COMMAND}
-    echo "" ## To avoid that ugly # icon representing the end of line
+    {
+      GITOUT=$(eval ${GIT_LOG_COMMAND} 2>/dev/null )
+    } || {
+      GITOUT=""
+    }
+
+    if [[ ! -z "$GITOUT" ]] ;  then
+      echo "$GITOUT"
+    else
+      echo "${YELLOW}Seems like $AUTHOR did nothing!"
+    fi
 fi
