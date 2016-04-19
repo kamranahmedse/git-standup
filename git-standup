@@ -48,7 +48,18 @@ SINCE="yesterday"
 
 
 if [[ $option_a ]] ; then
-  AUTHOR="$option_a"
+
+    CMD_AUTHOR='';
+    ary=(${option_a//,/ })
+    total_authors=${#ary[@]}
+    for key in "${!ary[@]}"; do
+    CMD_AUTHOR="$CMD_AUTHOR\(${ary[$key]}\)";
+    if [[ $key < $(($total_authors - 1)) ]]; then
+            CMD_AUTHOR="$CMD_AUTHOR\\|"
+        fi
+    done
+
+    AUTHOR="$option_a"
 fi
 
 
@@ -76,11 +87,10 @@ GIT_LOG_COMMAND="git --no-pager log \
     --all
     --no-merges
     --since=\"$SINCE\"
-    --author=\"$AUTHOR\"
+    --author=\"$CMD_AUTHOR\"
     --abbrev-commit
     --oneline
     --pretty=format:'%Cred%h%Creset - %s %Cgreen(%cr) %C(bold blue)<%an>%Creset'"
-
 
 ## For when the command has been run in a non-repo directory
 if [[ ! -d ".git" ]]; then
