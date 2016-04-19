@@ -2,11 +2,11 @@
 
 
 ## Get the options and store them in variables
-while getopts "d::a::w::" opt; do
+while getopts "d::a::w::s::" opt; do
     declare "option_$opt=${OPTARG:-0}"
 done
 
-## If some options were given but none of them were the ones that we allow 
+## If some options were given but none of them were the ones that we allow
 if [[ ! $option_a ]] && [[ ! $option_d ]] && [[ ! $option_w ]] &&  [[ $# -gt 0 ]] ; then
   >&2 echo -e "Usage: $0 [-a <author name>] [-w <weekstart-weekend>] [-d <days-ago>]\nExample: $0 -a \"John Doe\" -w \"MON-FRI\""
   exit 1
@@ -48,9 +48,33 @@ SINCE="yesterday"
 
 
 if [[ $option_a ]] ; then
-  AUTHOR="$option_a"
+
+    CMD_AUTHOR='';
+    ary=(${option_a//,/ })
+    total_authors=${#ary[@]}
+    for key in "${!ary[@]}"; do
+    CMD_AUTHOR="$CMD_AUTHOR\(${ary[$key]}\)";
+    if [[ $key < $(($total_authors - 1)) ]]; then
+            CMD_AUTHOR="$CMD_AUTHOR\\|"
+        fi
+    done
+
+    AUTHOR="$option_a"
 fi
 
+SORT=""
+CMD_SORT=""
+if [[ $option_s ]] ; then
+    if [[ $option_s == "date" ]] ; then
+        SORT="--date-order"
+    elif [[ $option_s == "date" ]] ; then
+        SORT="--date-order"
+    elif [[ $option_s == "author-date" ]] ; then
+        SORT="--author-order"
+    elif [[ $option_s == "author" ]] ; then
+        CMD_SORT=" | awk '{print \$((NF-1)),\$NF,\$0}' | sort -k 1 | awk '{\$1=\$2=\"\"; print \$0}'"
+    fi
+fi
 
 ## If -d flag is there, use it's value for the since
 if [[ $option_d ]] && [[ $option_d -ne 0 ]] ; then
@@ -74,13 +98,13 @@ fi
 
 GIT_LOG_COMMAND="git --no-pager log \
     --all
+    $SORT
     --no-merges
     --since=\"$SINCE\"
-    --author=\"$AUTHOR\"
+    --author=\"$CMD_AUTHOR\"
     --abbrev-commit
     --oneline
-    --pretty=format:'%Cred%h%Creset - %s %Cgreen(%cr) %C(bold blue)<%an>%Creset'"
-
+    --pretty=format:'%Cred%h%Creset - %s %Cgreen(%cr) %C(bold blue)<%an>%Creset'$CMD_SORT"
 
 ## For when the command has been run in a non-repo directory
 if [[ ! -d ".git" ]]; then
