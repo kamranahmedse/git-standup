@@ -119,6 +119,6 @@ else
     if [[ ! -z "$GITOUT" ]] ;  then
       echo "$GITOUT"
     else
-      echo "${YELLOW}Seems like $AUTHOR did nothing!"
+      echo "${YELLOW}Seems like $AUTHOR did nothing!${NORMAL}"
     fi
 fi
