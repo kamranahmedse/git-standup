@@ -81,13 +81,14 @@ GIT_LOG_COMMAND="git --no-pager log \
     --oneline
     --pretty=format:'%Cred%h%Creset - %s %Cgreen(%cr) %C(bold blue)<%an>%Creset'"
 
+FIND_GIT_REPO_DIR="find . -type d | grep '\.git' | sed 's/\.git.*//p' | uniq"
 
 ## For when the command has been run in a non-repo directory
 if [[ ! -d ".git" ]]; then
 
-    ## Iterate through all the top level directories inside
+    ## Iterate through all the sub-directories inside
     ## and look for any git repositories.
-    for DIR in */ ; do
+    for DIR in $( eval ${FIND_GIT_REPO_DIR} 2>/dev/null ) ; do
 
         cd "$DIR"
 
@@ -106,7 +107,7 @@ if [[ ! -d ".git" ]]; then
             fi
         fi
 
-        cd ..
+        cd - >/dev/null
     done
 
 else
