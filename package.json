@@ -1,0 +1,26 @@
+{
+  "name": "git-standup",
+  "version": "2.1.0",
+  "description": "Recall what you did on the last working day. Psst! or be nosy and find what someone else in your team did ;-)",
+  "main": "",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "bin": {
+    "git-standup": "./git-standup"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kamranahmedse/git-standup.git"
+  },
+  "keywords": [
+    "git",
+    "standup"
+  ],
+  "author": "Kamran Ahmed",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/kamranahmedse/git-standup/issues"
+  },
+  "homepage": "https://github.com/kamranahmedse/git-standup#readme"
+}
