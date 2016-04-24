@@ -18,6 +18,12 @@ $ cd git-standup
 $ sudo make install
 ```
 
+Or you can install with npm
+
+```
+$ npm install -g git-standup
+```
+
 ## Usage
 
 ```bash
