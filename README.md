@@ -63,6 +63,14 @@ $ git standup -a "John Doe"
 ```
 ![git standup](http://i.imgur.com/sYICxW8.gif)
 
+## Check what every contributor did
+
+If you want to find out someone else's commits do
+
+```bash
+$ git standup -a "all"
+```
+
 ## Commits from `n` days ago
 
 If you would like to show all your/someone else's commits from n days ago, you can do
