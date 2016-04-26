@@ -3,7 +3,7 @@
 
 ## Get the options and store them in variables
 while getopts "d::a::w::" opt; do
-    declare "option_$opt=${OPTARG:-0}"
+  declare "option_$opt=${OPTARG:-0}"
 done
 
 ## If some options were given but none of them were the ones that we allow 
@@ -48,7 +48,12 @@ SINCE="yesterday"
 
 
 if [[ $option_a ]] ; then
-  AUTHOR="$option_a"
+  # In case the parameter
+  if [[ $option_a = 'all' ]] ; then
+    AUTHOR=".*"
+  else
+    AUTHOR="$option_a"
+  fi
 fi
 
 
@@ -85,40 +90,45 @@ GIT_LOG_COMMAND="git --no-pager log \
 ## For when the command has been run in a non-repo directory
 if [[ ! -d ".git" ]]; then
 
-    ## Iterate through all the top level directories inside
-    ## and look for any git repositories.
-    for DIR in */ ; do
+  ## Iterate through all the top level directories inside
+  ## and look for any git repositories.
+  for DIR in */ ; do
 
-        cd "$DIR"
+    cd "$DIR"
 
-        ## Show the detail only if it is a git repository
-        if [[ -d ".git" ]] ; then
-            {
-              GITOUT=$(eval ${GIT_LOG_COMMAND} 2>/dev/null )
-            } || {
-              GITOUT=""
-            }
+    ## Show the detail only if it is a git repository
+    if [[ -d ".git" ]] ; then
+      {
+        GITOUT=$(eval ${GIT_LOG_COMMAND} 2>/dev/null )
+      } || {
+        GITOUT=""
+      }
 
-            ## Only output if there is some activity
-            if [[ ! -z "$GITOUT" ]] ;  then
-                echo "${BOLD}${UNDERLINE}${YELLOW}$DIR${NORMAL}"
-                echo "$GITOUT"
-            fi
-        fi
+      ## Only output if there is some activity
+      if [[ ! -z "$GITOUT" ]] ;  then
+          echo "${BOLD}${UNDERLINE}${YELLOW}$DIR${NORMAL}"
+          echo "$GITOUT"
+      fi
+    fi
 
-        cd ..
-    done
+    cd ..
+  done
 
 else
-    {
-      GITOUT=$(eval ${GIT_LOG_COMMAND} 2>/dev/null )
-    } || {
-      GITOUT=""
-    }
+  {
+    GITOUT=$(eval ${GIT_LOG_COMMAND} 2>/dev/null )
+  } || {
+    GITOUT=""
+  }
 
-    if [[ ! -z "$GITOUT" ]] ;  then
-      echo "$GITOUT"
-    else
-      echo "${YELLOW}Seems like $AUTHOR did nothing!${NORMAL}"
+  if [[ ! -z "$GITOUT" ]] ;  then
+    echo "$GITOUT"
+  else
+
+    if [[ $AUTHOR = '.*' ]] ; then
+      AUTHOR="all the contributors"
     fi
+
+    echo "${YELLOW}Seems like $AUTHOR did nothing!${NORMAL}"
+  fi
 fi
