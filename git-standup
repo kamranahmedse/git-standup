@@ -2,15 +2,44 @@
 
 set -e
 
-## Get the options and store them in variables
-while getopts "d::a::w::" opt; do
-  declare "option_$opt=${OPTARG:-0}"
-done
+## Parse command line
+function usage() {
+  cat <<EOS
+Usage: 
+  git standup [-a <author name>] [-w <weekstart-weekend>] [-d <days-ago>] [-h]
 
-## If some options were given but none of them were the ones that we allow 
-if [[ ! $option_a ]] && [[ ! $option_d ]] && [[ ! $option_w ]] &&  [[ $# -gt 0 ]] ; then
-  >&2 echo -e "Usage: $0 [-a <author name>] [-w <weekstart-weekend>] [-d <days-ago>]\nExample: $0 -a \"John Doe\" -w \"MON-FRI\""
+  -a      - Specify author to restrict search to
+  -w      - Specify weekday range to limit search to
+  -h      - Display this help screen
+
+Examples:
+  git standup -a "John Doe" -w "MON-FRI"
+EOS
+}
+
+while getopts "hd:a:w:" opt; do
+  case $opt in
+    h|d|a|w)
+      declare "option_$opt=${OPTARG:-0}"
+      ;;
+    \?)
+      echo >&2 "Use 'git standup -h' to see usage info"
+      exit 1
+      ;;
+  esac
+done
+shift $((OPTIND-1))
+if [[ $# -gt 0 ]]; then
+  echo >&2 "Invalid arguments: $@"
+  echo >&2 "Use 'git standup -h' to see usage info"
   exit 1
+fi
+
+# Main script
+
+if [[ $option_h ]]; then
+  usage
+  exit 0
 fi
 
 # Use colors, but only if connected to a terminal, and that terminal
