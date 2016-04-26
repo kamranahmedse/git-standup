@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 
+set -e
 
 ## Get the options and store them in variables
 while getopts "d::a::w::" opt; do
@@ -12,13 +13,11 @@ if [[ ! $option_a ]] && [[ ! $option_d ]] && [[ ! $option_w ]] &&  [[ $# -gt 0 ]
   exit 1
 fi
 
-{
-  # Use colors, but only if connected to a terminal, and that terminal
-  # supports them.
-  if which tput >/dev/null 2>&1; then
-    ncolors=$(tput colors)
-  fi
-  if [[ -t 1 ]] && [[ -n "$ncolors" ]] && [[ "$ncolors" -ge 8 ]] ; then
+# Use colors, but only if connected to a terminal, and that terminal
+# supports them.
+if [[ -t 1 ]] && [[ -n "$TERM" ]] && which tput &>/dev/null && tput colors &>/dev/null; then
+  ncolors=$(tput colors)
+  if [[ -n "$ncolors" ]] && [[ "$ncolors" -ge 8 ]] ; then
     RED=$(tput setaf 1)
     GREEN=$(tput setaf 2)
     YELLOW=$(tput setaf 3)
@@ -26,6 +25,7 @@ fi
     BOLD=$(tput bold)
     UNDERLINE=$(tput smul)
     NORMAL=$(tput sgr0)
+    GIT_PRETTY_FORMAT='%Cred%h%Creset - %s %Cgreen(%cr) %C(bold blue)<%an>%Creset'
   else
     RED=""
     GREEN=""
@@ -34,22 +34,9 @@ fi
     BOLD=""
     UNDERLINE=""
     NORMAL=""
+    GIT_PRETTY_FORMAT='%h - %s (%cr) <%an>'
   fi
-} || {
-  RED=""
-  GREEN=""
-  YELLOW=""
-  BLUE=""
-  BOLD=""
-  UNDERLINE=""
-  NORMAL=""
-}
-
-
-# Only enable exit-on-error after the non-critical colorization stuff,
-# which may fail on systems lacking tput or terminfo
-set -e
-
+fi
 
 ## Set the necessary variables for standup
 AUTHOR=`git config user.name`
@@ -66,7 +53,7 @@ if [[ $option_a ]] ; then
 fi
 
 
-## If -d flag is there, use it's value for the since
+## If -d flag is there, use its value for the since
 if [[ $option_d ]] && [[ $option_d -ne 0 ]] ; then
   SINCE="$option_d days ago"
 else
@@ -93,7 +80,7 @@ GIT_LOG_COMMAND="git --no-pager log \
     --author=\"$AUTHOR\"
     --abbrev-commit
     --oneline
-    --pretty=format:'%Cred%h%Creset - %s %Cgreen(%cr) %C(bold blue)<%an>%Creset'"
+    --pretty=format:'$GIT_PRETTY_FORMAT'"
 
 
 ## For when the command has been run in a non-repo directory
