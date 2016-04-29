@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
 
-set -e
-
 ## Parse command line
 function usage() {
   cat <<EOS
