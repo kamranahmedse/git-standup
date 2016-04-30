@@ -4,20 +4,21 @@
 function usage() {
   cat <<EOS
 Usage: 
-  git standup [-a <author name>] [-w <weekstart-weekend>] [-d <days-ago>] [-h]
+  git standup [-a <author name>] [-w <weekstart-weekend>] [-d <days-ago>] [-m <max-dir-depth>] [-h]
 
   -a      - Specify author to restrict search to
   -w      - Specify weekday range to limit search to
+  -m      - Specify the depth of recursive directory search
   -h      - Display this help screen
 
 Examples:
-  git standup -a "John Doe" -w "MON-FRI"
+  git standup -a "John Doe" -w "MON-FRI" -m 3
 EOS
 }
 
-while getopts "hd:a:w:" opt; do
+while getopts "hd:a:w:m:" opt; do
   case $opt in
-    h|d|a|w)
+    h|d|a|w|m)
       declare "option_$opt=${OPTARG:-0}"
       ;;
     \?)
@@ -68,7 +69,7 @@ fi
 ## Set the necessary variables for standup
 AUTHOR=`git config user.name`
 SINCE="yesterday"
-
+MAXDEPTH=2
 
 if [[ $option_a ]] ; then
   # In case the parameter
@@ -79,6 +80,9 @@ if [[ $option_a ]] ; then
   fi
 fi
 
+if [[ $option_m ]] ; then
+  MAXDEPTH="$(($option_m + 1))"
+fi
 
 ## If -d flag is there, use its value for the since
 if [[ $option_d ]] && [[ $option_d -ne 0 ]] ; then
@@ -112,12 +116,17 @@ GIT_LOG_COMMAND="git --no-pager log \
 
 ## For when the command has been run in a non-repo directory
 if [[ ! -d ".git" ]]; then
+  BASE_DIR=`pwd`
+
+  ## Set delimiter to newline for the loop
+  IFS=$'\n'
 
   ## Iterate through all the top level directories inside
   ## and look for any git repositories.
-  for DIR in */ ; do
+  for DIR in `find . -name .git -type d -maxdepth $MAXDEPTH -mindepth 0`; do
 
-    cd "$DIR"
+    cd "`dirname $DIR`"
+    CUR_DIR=`pwd`
 
     ## Show the detail only if it is a git repository
     if [[ -d ".git" ]] ; then
@@ -129,12 +138,12 @@ if [[ ! -d ".git" ]]; then
 
       ## Only output if there is some activity
       if [[ ! -z "$GITOUT" ]] ;  then
-          echo "${BOLD}${UNDERLINE}${YELLOW}$DIR${NORMAL}"
+          echo "${BOLD}${UNDERLINE}${YELLOW}$CUR_DIR${NORMAL}"
           echo "$GITOUT"
       fi
     fi
 
-    cd ..
+    cd $BASE_DIR
   done
 
 else
