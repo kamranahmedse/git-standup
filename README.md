@@ -27,7 +27,7 @@ $ npm install -g git-standup
 ## Usage
 
 ```bash
-$ git-standup [-a <author name>] [-w <weekstart-weekend>] [-d <days-ago>]
+$ git-standup [-a <author name>] [-w <weekstart-weekend>] [-d <days-ago>] [-m <max-dir-depth>]
 ```
 
 For the basic usage, all you have to do is run `git standup` in a repository or a folder containing multiple repositories
@@ -94,6 +94,15 @@ If you want to change this, like I want because here in Dubai working days are n
 
 ```bash
 $ git standup -w "SUN-THU"
+```
+
+# Directory depth
+
+By default the script searches only in the current directory or one
+level deep. If you want to increase that, use the `-m` switch.
+
+```bash
+$ git standup -m 3
 ```
 
 ## Mixing options
