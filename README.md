@@ -53,6 +53,15 @@ $ git standup
 
 This will show you all your commits since the last working day in all the repositories inside. 
 
+## Directory depth
+
+By default the script searches only in the current directory or one
+level deep. If you want to increase that, use the `-m` switch.
+
+```bash
+$ git standup -m 3
+```
+
 ## Stand someone else up
 
 If you want to find out someone else's commits do
@@ -85,6 +94,18 @@ $ git standup -a "John Doe" -d 5
 
 ![git standup -d 5](http://i.imgur.com/j7Ma760.gif)
 
+## [Identifying Signed Commits](https://git-scm.com/book/en/v2/Git-Tools-Signing-Your-Work)
+
+You can optionally check for the signed commits as well.
+
+```bash
+# Signed commits will have gpg: G
+# While all the other ones will have gpg: N at the end
+$ git standup -g
+```
+
+![GPG Info](http://i.imgur.com/bwJzPft.gif)
+
 
 ## Changing the Weekdays
 
@@ -94,15 +115,6 @@ If you want to change this, like I want because here in Dubai working days are n
 
 ```bash
 $ git standup -w "SUN-THU"
-```
-
-# Directory depth
-
-By default the script searches only in the current directory or one
-level deep. If you want to increase that, use the `-m` switch.
-
-```bash
-$ git standup -m 3
 ```
 
 ## Mixing options
