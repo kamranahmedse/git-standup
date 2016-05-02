@@ -53,7 +53,7 @@ if [[ -t 1 ]] && [[ -n "$TERM" ]] && which tput &>/dev/null && tput colors &>/de
     BOLD=$(tput bold)
     UNDERLINE=$(tput smul)
     NORMAL=$(tput sgr0)
-    GIT_PRETTY_FORMAT='%Cred%h%Creset - %s %Cgreen(%cr) %C(bold blue)<%an>%Creset'
+    GIT_PRETTY_FORMAT='%Cred%h%Creset - %s %Cgreen(%cr) %C(bold blue)<%an>%Creset gpg: %G?'
   else
     RED=""
     GREEN=""
@@ -62,7 +62,7 @@ if [[ -t 1 ]] && [[ -n "$TERM" ]] && which tput &>/dev/null && tput colors &>/de
     BOLD=""
     UNDERLINE=""
     NORMAL=""
-    GIT_PRETTY_FORMAT='%h - %s (%cr) <%an>'
+    GIT_PRETTY_FORMAT='%h - %s (%cr) <%an> gpg: %G?'
   fi
 fi
 
