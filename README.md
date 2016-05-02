@@ -96,11 +96,9 @@ $ git standup -a "John Doe" -d 5
 
 ## [Identifying Signed Commits](https://git-scm.com/book/en/v2/Git-Tools-Signing-Your-Work)
 
-You can optionally check for the signed commits as well.
+Add `-g` flag to check the GPG info
 
 ```bash
-# Signed commits will have gpg: G
-# While all the other ones will have gpg: N at the end
 $ git standup -g
 ```
 
