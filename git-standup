@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 
-## Parse command line
 function usage() {
   cat <<EOS
 Usage: 
@@ -28,7 +27,9 @@ while getopts "hgd:a:w:m:" opt; do
       ;;
   esac
 done
+
 shift $((OPTIND-1))
+
 if [[ $# -gt 0 ]]; then
   echo >&2 "Invalid arguments: $@"
   echo >&2 "Use 'git standup -h' to see usage info"
