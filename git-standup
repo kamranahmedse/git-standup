@@ -4,21 +4,22 @@
 function usage() {
   cat <<EOS
 Usage: 
-  git standup [-a <author name>] [-w <weekstart-weekend>] [-d <days-ago>] [-m <max-dir-depth>] [-h]
+  git standup [-a <author name>] [-w <weekstart-weekend>] [-d <days-ago>] [-m <max-dir-depth>] [-g] [-h]
 
   -a      - Specify author to restrict search to
   -w      - Specify weekday range to limit search to
   -m      - Specify the depth of recursive directory search
   -h      - Display this help screen
+  -g      - Show if commit is GPG signed (G) or not (N)
 
 Examples:
   git standup -a "John Doe" -w "MON-FRI" -m 3
 EOS
 }
 
-while getopts "hd:a:w:m:" opt; do
+while getopts "hgd:a:w:m:" opt; do
   case $opt in
-    h|d|a|w|m)
+    h|d|a|w|m|g)
       declare "option_$opt=${OPTARG:-0}"
       ;;
     \?)
@@ -53,7 +54,11 @@ if [[ -t 1 ]] && [[ -n "$TERM" ]] && which tput &>/dev/null && tput colors &>/de
     BOLD=$(tput bold)
     UNDERLINE=$(tput smul)
     NORMAL=$(tput sgr0)
-    GIT_PRETTY_FORMAT='%Cred%h%Creset - %s %Cgreen(%cr) %C(bold blue)<%an>%Creset gpg: %G?'
+    GIT_PRETTY_FORMAT='%Cred%h%Creset - %s %Cgreen(%cr) %C(bold blue)<%an>%Creset'
+
+    if [[ $option_g ]] ; then
+      GIT_PRETTY_FORMAT="$GIT_PRETTY_FORMAT %C(yellow)gpg: %G?%Creset"
+    fi
   else
     RED=""
     GREEN=""
@@ -62,7 +67,11 @@ if [[ -t 1 ]] && [[ -n "$TERM" ]] && which tput &>/dev/null && tput colors &>/de
     BOLD=""
     UNDERLINE=""
     NORMAL=""
-    GIT_PRETTY_FORMAT='%h - %s (%cr) <%an> gpg: %G?'
+    GIT_PRETTY_FORMAT='%h - %s (%cr) <%an>'
+
+    if [[ $option_g ]] ; then
+      GIT_PRETTY_FORMAT="$GIT_PRETTY_FORMAT gpg: %G?"
+    fi
   fi
 fi
 
