@@ -2,7 +2,7 @@
 
 function usage() {
   cat <<EOS
-Usage: 
+Usage:
   git standup [-a <author name>] [-w <weekstart-weekend>] [-d <days-ago>] [-m <max-dir-depth>] [-g] [-h]
 
   -a      - Specify author to restrict search to
