@@ -10,6 +10,12 @@ You can install it either using CURL
 $ curl -L https://raw.githubusercontent.com/kamranahmedse/git-standup/master/installer.sh | sudo sh
 ```
 
+Or install using `npm`
+
+```
+$ npm install -g git-standup
+```
+
 Or by cloning and manually installing it
 
 ```bash
@@ -18,10 +24,11 @@ $ cd git-standup
 $ sudo make install
 ```
 
-Or you can install with npm
+Also, you can install it using `brew`
 
 ```
-$ npm install -g git-standup
+$ brew update
+$ brew install git-standup
 ```
 
 ## Usage
