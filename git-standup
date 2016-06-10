@@ -8,6 +8,8 @@ Usage:
   -a      - Specify author to restrict search to
   -w      - Specify weekday range to limit search to
   -m      - Specify the depth of recursive directory search
+  -d      - Specify the number of days back to include
+  -D      - Specify the date format for "git log" (default: relative)
   -h      - Display this help screen
   -g      - Show if commit is GPG signed (G) or not (N)
 
@@ -16,9 +18,9 @@ Examples:
 EOS
 }
 
-while getopts "hgd:a:w:m:" opt; do
+while getopts "hgd:a:w:m:D:" opt; do
   case $opt in
-    h|d|a|w|m|g)
+    h|d|a|w|m|g|D)
       declare "option_$opt=${OPTARG:-0}"
       ;;
     \?)
@@ -55,7 +57,7 @@ if [[ -t 1 ]] && [[ -n "$TERM" ]] && which tput &>/dev/null && tput colors &>/de
     BOLD=$(tput bold)
     UNDERLINE=$(tput smul)
     NORMAL=$(tput sgr0)
-    GIT_PRETTY_FORMAT='%Cred%h%Creset - %s %Cgreen(%cr) %C(bold blue)<%an>%Creset'
+    GIT_PRETTY_FORMAT='%Cred%h%Creset - %s %Cgreen(%cd) %C(bold blue)<%an>%Creset'
 
     if [[ $option_g ]] ; then
       GIT_PRETTY_FORMAT="$GIT_PRETTY_FORMAT %C(yellow)gpg: %G?%Creset"
@@ -68,7 +70,7 @@ if [[ -t 1 ]] && [[ -n "$TERM" ]] && which tput &>/dev/null && tput colors &>/de
     BOLD=""
     UNDERLINE=""
     NORMAL=""
-    GIT_PRETTY_FORMAT='%h - %s (%cr) <%an>'
+    GIT_PRETTY_FORMAT='%h - %s (%cd) <%an>'
 
     if [[ $option_g ]] ; then
       GIT_PRETTY_FORMAT="$GIT_PRETTY_FORMAT gpg: %G?"
@@ -113,6 +115,7 @@ else
   fi
 fi
 
+GIT_DATE_FORMAT=${option_D:-relative}
 
 GIT_LOG_COMMAND="git --no-pager log \
     --all
@@ -121,7 +124,8 @@ GIT_LOG_COMMAND="git --no-pager log \
     --author=\"$AUTHOR\"
     --abbrev-commit
     --oneline
-    --pretty=format:'$GIT_PRETTY_FORMAT'"
+    --pretty=format:'$GIT_PRETTY_FORMAT'
+    --date='$GIT_DATE_FORMAT'"
 
 
 ## For when the command has been run in a non-repo directory
