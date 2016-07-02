@@ -34,8 +34,18 @@ $ brew install git-standup
 ## Usage
 
 ```bash
-$ git-standup [-a <author name>] [-w <weekstart-weekend>] [-d <days-ago>] [-m <max-dir-depth>]
+$ git standup [-a <author name>] [-w <weekstart-weekend>] [-d <days-ago>] [-m <max-dir-depth>] [-D <date-format>] [-g] [-h]
 ```
+
+Below is the description for each of the flags
+
+- `-a`      - Specify author to restrict search to
+- `-w`      - Specify weekday range to limit search to
+- `-m`      - Specify the depth of recursive directory search
+- `-d`      - Specify the number of days back to include
+- `-D`      - Specify the date format for "git log" (default: relative)
+- `-h`      - Display the help screen
+- `-g`      - Show if commit is GPG signed or not
 
 For the basic usage, all you have to do is run `git standup` in a repository or a folder containing multiple repositories
 
@@ -69,7 +79,7 @@ level deep. If you want to increase that, use the `-m` switch.
 $ git standup -m 3
 ```
 
-## Stand someone else up
+## Checking someone else's commits
 
 If you want to find out someone else's commits do
 
@@ -111,6 +121,16 @@ $ git standup -g
 
 ![GPG Info](http://i.imgur.com/bwJzPft.gif)
 
+## Specifying the date format
+
+Add `-D` flag to specify the date format. Default is `relative`
+
+Please note that it accepts the same format that you could pass while doing git log. For example
+
+```bash
+$ git standup -D relative
+# Or instead of relative, it could be local|default|iso|iso-strict|rfc|short|raw etc
+```
 
 ## Changing the Weekdays
 
