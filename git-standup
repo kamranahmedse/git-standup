@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 
+# Shows the usage
 function usage() {
   cat <<EOS
 Usage:
@@ -16,6 +17,38 @@ Usage:
 Examples:
   git standup -a "John Doe" -w "MON-FRI" -m 3
 EOS
+}
+
+# Sets up the colored output
+function colored() {
+  RED=$(tput setaf 1)
+  GREEN=$(tput setaf 2)
+  YELLOW=$(tput setaf 3)
+  BLUE=$(tput setaf 4)
+  BOLD=$(tput bold)
+  UNDERLINE=$(tput smul)
+  NORMAL=$(tput sgr0)
+  GIT_PRETTY_FORMAT='%Cred%h%Creset - %s %Cgreen(%cd) %C(bold blue)<%an>%Creset'
+
+  if [[ $option_g ]] ; then
+    GIT_PRETTY_FORMAT="$GIT_PRETTY_FORMAT %C(yellow)gpg: %G?%Creset"
+  fi
+}
+
+# Sets up the uncolored output
+function uncolored() {
+  RED=""
+  GREEN=""
+  YELLOW=""
+  BLUE=""
+  BOLD=""
+  UNDERLINE=""
+  NORMAL=""
+  GIT_PRETTY_FORMAT='%h - %s (%cd) <%an>'
+
+  if [[ $option_g ]] ; then
+    GIT_PRETTY_FORMAT="$GIT_PRETTY_FORMAT gpg: %G?"
+  fi
 }
 
 while getopts "hgd:a:w:m:D:" opt; do
@@ -38,6 +71,7 @@ if [[ $# -gt 0 ]]; then
   exit 1
 fi
 
+
 # Main script
 
 if [[ $option_h ]]; then
@@ -50,32 +84,12 @@ fi
 if [[ -t 1 ]] && [[ -n "$TERM" ]] && which tput &>/dev/null && tput colors &>/dev/null; then
   ncolors=$(tput colors)
   if [[ -n "$ncolors" ]] && [[ "$ncolors" -ge 8 ]] ; then
-    RED=$(tput setaf 1)
-    GREEN=$(tput setaf 2)
-    YELLOW=$(tput setaf 3)
-    BLUE=$(tput setaf 4)
-    BOLD=$(tput bold)
-    UNDERLINE=$(tput smul)
-    NORMAL=$(tput sgr0)
-    GIT_PRETTY_FORMAT='%Cred%h%Creset - %s %Cgreen(%cd) %C(bold blue)<%an>%Creset'
-
-    if [[ $option_g ]] ; then
-      GIT_PRETTY_FORMAT="$GIT_PRETTY_FORMAT %C(yellow)gpg: %G?%Creset"
-    fi
+    colored
   else
-    RED=""
-    GREEN=""
-    YELLOW=""
-    BLUE=""
-    BOLD=""
-    UNDERLINE=""
-    NORMAL=""
-    GIT_PRETTY_FORMAT='%h - %s (%cd) <%an>'
-
-    if [[ $option_g ]] ; then
-      GIT_PRETTY_FORMAT="$GIT_PRETTY_FORMAT gpg: %G?"
-    fi
+    uncolored
   fi
+else
+  uncolored
 fi
 
 ## Set the necessary variables for standup
