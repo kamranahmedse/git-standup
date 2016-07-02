@@ -1,6 +1,6 @@
 {
   "name": "git-standup",
-  "version": "2.1.6",
+  "version": "2.1.8",
   "description": "Recall what you did on the last working day. Psst! or be nosy and find what someone else in your team did ;-)",
   "main": "",
   "scripts": {
