@@ -34,7 +34,7 @@ $ brew install git-standup
 ## Usage
 
 ```bash
-$ git standup [-a <author name>] [-w <weekstart-weekend>] [-d <days-ago>] [-m <max-dir-depth>] [-D <date-format>] [-g] [-h]
+$ git standup [-a <author name>] [-w <weekstart-weekend>] [-d <days-ago>] [-m <max-dir-depth>] [-D <date-format>] [-g] [-h] [-f]
 ```
 
 Below is the description for each of the flags
@@ -46,6 +46,7 @@ Below is the description for each of the flags
 - `-D`      - Specify the date format for "git log" (default: relative)
 - `-h`      - Display the help screen
 - `-g`      - Show if commit is GPG signed or not
+- `-f`      - Fetch the latest commits beforehand
 
 For the basic usage, all you have to do is run `git standup` in a repository or a folder containing multiple repositories
 
@@ -140,6 +141,16 @@ If you want to change this, like I want because here in Dubai working days are n
 
 ```bash
 $ git standup -w "SUN-THU"
+```
+
+## Fetch commits before standup
+
+If you have many repositories that you want to generate a standup for, it may be useful to automatically run `git fetch` before viewing the standup.
+
+If you would like to automatically run `git fetch --all` before printing the standup, you can add the `-f` flag, as show below
+
+```bash
+$ git standup -f
 ```
 
 ## Mixing options
