@@ -4,7 +4,7 @@
 function usage() {
   cat <<EOS
 Usage:
-  git standup [-a <author name>] [-w <weekstart-weekend>] [-d <days-ago>] [-m <max-dir-depth>] [-g] [-h]
+  git standup [-a <author name>] [-w <weekstart-weekend>] [-d <days-ago>] [-m <max-dir-depth>] [-g] [-h] [-f]
 
   -a      - Specify author to restrict search to
   -w      - Specify weekday range to limit search to
@@ -13,6 +13,7 @@ Usage:
   -D      - Specify the date format for "git log" (default: relative)
   -h      - Display this help screen
   -g      - Show if commit is GPG signed (G) or not (N)
+  -f      - Fetch the latest commits beforehand
 
 Examples:
   git standup -a "John Doe" -w "MON-FRI" -m 3
@@ -51,9 +52,9 @@ function uncolored() {
   fi
 }
 
-while getopts "hgd:a:w:m:D:" opt; do
+while getopts "hgfd:a:w:m:D:" opt; do
   case $opt in
-    h|d|a|w|m|g|D)
+    h|d|a|w|m|g|D|f)
       declare "option_$opt=${OPTARG:-0}"
       ;;
     \?)
@@ -149,9 +150,24 @@ if [[ ! -d ".git" ]]; then
   ## Set delimiter to newline for the loop
   IFS=$'\n'
 
-  ## Iterate through all the top level directories inside
-  ## and look for any git repositories.
-  for DIR in `find . -maxdepth $MAXDEPTH -mindepth 0 -name .git -type d`; do
+  ## Recursively search for git repositories
+  DIRS=`find . -maxdepth $MAXDEPTH -mindepth 0 -name .git -type d`
+
+  if [[ $option_f ]]; then
+    echo "Fetching lastest commits for all repositories"
+
+    for DIR in $DIRS; do
+
+      cd "`dirname $DIR`"
+
+      git fetch --all > /dev/null 2>&1
+
+      cd $BASE_DIR
+
+    done
+  fi
+
+  for DIR in $DIRS; do
 
     cd "`dirname $DIR`"
     CUR_DIR=`pwd`
@@ -175,6 +191,13 @@ if [[ ! -d ".git" ]]; then
   done
 
 else
+
+  if [[ $option_f ]]; then
+    echo "Fetching latest commits"
+
+    git fetch --all > /dev/null 2>&1
+  fi
+
   {
     GITOUT=$(eval ${GIT_LOG_COMMAND} 2>/dev/null )
   } || {
