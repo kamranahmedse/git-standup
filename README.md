@@ -34,7 +34,13 @@ $ brew install git-standup
 ## Usage
 
 ```bash
-$ git standup [-a <author name>] [-w <weekstart-weekend>] [-d <days-ago>] [-m <max-dir-depth>] [-D <date-format>] [-g] [-h]
+$ git standup [-a <author name>] 
+              [-w <weekstart-weekend>] 
+              [-d <days-ago>] 
+              [-m <max-dir-depth>] 
+              [-D <date-format>] 
+              [-g] 
+              [-h]
 ```
 
 Below is the description for each of the flags
