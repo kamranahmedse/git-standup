@@ -151,7 +151,7 @@ if [[ ! -d ".git" ]]; then
 
   ## Iterate through all the top level directories inside
   ## and look for any git repositories.
-  for DIR in `find . -maxdepth $MAXDEPTH -mindepth 0 -name .git -type d`; do
+  for DIR in `find -L . -maxdepth $MAXDEPTH -mindepth 0 -name .git -type d`; do
 
     cd "`dirname $DIR`"
     CUR_DIR=`pwd`
