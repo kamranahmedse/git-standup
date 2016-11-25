@@ -9,6 +9,7 @@ Usage:
   -a      - Specify author to restrict search to
   -w      - Specify weekday range to limit search to
   -m      - Specify the depth of recursive directory search
+  -L      - Toggle inclusion of symbolic links in recursive directory search
   -d      - Specify the number of days back to include
   -D      - Specify the date format for "git log" (default: relative)
   -h      - Display this help screen
@@ -51,9 +52,9 @@ function uncolored() {
   fi
 }
 
-while getopts "hgd:a:w:m:D:" opt; do
+while getopts "hgd:a:w:m:D:L" opt; do
   case $opt in
-    h|d|a|w|m|g|D)
+    h|d|a|w|m|g|D|L)
       declare "option_$opt=${OPTARG:-0}"
       ;;
     \?)
@@ -96,6 +97,7 @@ fi
 AUTHOR=`git config user.name`
 SINCE="yesterday"
 MAXDEPTH=2
+INCLUDE_LINKS=
 
 if [[ $option_a ]] ; then
   # In case the parameter
@@ -108,6 +110,10 @@ fi
 
 if [[ $option_m ]] ; then
   MAXDEPTH="$(($option_m + 1))"
+fi
+
+if [[ $option_L ]] ; then
+  INCLUDE_LINKS="-L"
 fi
 
 ## If -d flag is there, use its value for the since
@@ -151,7 +157,7 @@ if [[ ! -d ".git" ]]; then
 
   ## Iterate through all the top level directories inside
   ## and look for any git repositories.
-  for DIR in `find . -maxdepth $MAXDEPTH -mindepth 0 -name .git -type d`; do
+  for DIR in `find $INCLUDE_LINKS . -maxdepth $MAXDEPTH -mindepth 0 -name .git -type d`; do
 
     cd "`dirname $DIR`"
     CUR_DIR=`pwd`
