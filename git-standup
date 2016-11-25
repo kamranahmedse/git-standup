@@ -4,7 +4,7 @@
 function usage() {
   cat <<EOS
 Usage:
-  git standup [-a <author name>] [-w <weekstart-weekend>] [-d <days-ago>] [-m <max-dir-depth>] [-g] [-h]
+  git standup [-a <author name>] [-w <weekstart-weekend>] [-d <days-ago>] [-m <max-dir-depth>] [-g] [-h] [-f]
 
   -a      - Specify author to restrict search to
   -w      - Specify weekday range to limit search to
@@ -14,6 +14,7 @@ Usage:
   -D      - Specify the date format for "git log" (default: relative)
   -h      - Display this help screen
   -g      - Show if commit is GPG signed (G) or not (N)
+  -f      - Fetch the latest commits beforehand
 
 Examples:
   git standup -a "John Doe" -w "MON-FRI" -m 3
@@ -52,9 +53,9 @@ function uncolored() {
   fi
 }
 
-while getopts "hgd:a:w:m:D:L" opt; do
+while getopts "hgfd:a:w:m:D:L" opt; do
   case $opt in
-    h|d|a|w|m|g|D|L)
+    h|d|a|w|m|g|D|f|L)
       declare "option_$opt=${OPTARG:-0}"
       ;;
     \?)
@@ -155,12 +156,34 @@ if [[ ! -d ".git" ]]; then
   ## Set delimiter to newline for the loop
   IFS=$'\n'
 
-  ## Iterate through all the top level directories inside
-  ## and look for any git repositories.
-  for DIR in `find $INCLUDE_LINKS . -maxdepth $MAXDEPTH -mindepth 0 -name .git -type d`; do
+  ## Recursively search for git repositories
+  PROJECT_DIRS=`find $INCLUDE_LINKS . -maxdepth $MAXDEPTH -mindepth 0 -name .git -type d`
+
+  # Fetch the latest commits, if required
+  if [[ $option_f ]]; then
+
+    echo "${BOLD}${GREEN}Fetching commits ..${NORMAL}"
+
+    # Foreach of the project directories, fetch the commits
+    for DIR in $PROJECT_DIRS; do
+
+      cd "`dirname $DIR`"
+      CUR_DIR=`pwd`
+      BASENAME=`basename "$CUR_DIR"`
+
+      if [[ -d ".git" ]] ; then
+        echo "   ${YELLOW}$BASENAME${NORMAL}"
+        git fetch --all > /dev/null 2>&1
+      fi
+
+      cd $BASE_DIR
+    done
+  fi
+
+  # Get the standup details for each of the projects
+  for DIR in $PROJECT_DIRS; do
 
     cd "`dirname $DIR`"
-    CUR_DIR=`pwd`
 
     ## Show the detail only if it is a git repository
     if [[ -d ".git" ]] ; then
@@ -172,8 +195,9 @@ if [[ ! -d ".git" ]]; then
 
       ## Only output if there is some activity
       if [[ ! -z "$GITOUT" ]] ;  then
-          echo "${BOLD}${UNDERLINE}${YELLOW}$CUR_DIR${NORMAL}"
-          echo "$GITOUT"
+        # Directory heading
+        echo "${BOLD}${UNDERLINE}${YELLOW}$CUR_DIR${NORMAL}"
+        echo "$GITOUT"
       fi
     fi
 
@@ -181,6 +205,12 @@ if [[ ! -d ".git" ]]; then
   done
 
 else
+
+  if [[ $option_f ]]; then
+    echo "${GREEN}Fetching commits ..${NORMAL}"
+    git fetch --all > /dev/null 2>&1
+  fi
+
   {
     GITOUT=$(eval ${GIT_LOG_COMMAND} 2>/dev/null )
   } || {

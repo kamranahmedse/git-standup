@@ -36,7 +36,8 @@ $ brew install git-standup
 ```bash
 $ git standup [-a <author name>] 
               [-w <weekstart-weekend>] 
-              [-m <max-dir-depth>] 
+              [-m <max-dir-depth>]
+              [-f]
               [-L]
               [-d <days-ago>]
               [-D <date-format>] 
@@ -46,14 +47,15 @@ $ git standup [-a <author name>]
 
 Below is the description for each of the flags
 
-- `-a`      - Specify author to restrict search to
-- `-w`      - Specify weekday range to limit search to
+- `-a`      - Specify author to restrict search to (name or email)
+- `-w`      - Specify weekday range to limit search to (e.g. `git standup -w SUN-THU`)
 - `-m`      - Specify the depth of recursive directory search
 - `-L`      - Toggle inclusion of symbolic links in recursive directory search
 - `-d`      - Specify the number of days back to include
 - `-D`      - Specify the date format for "git log" (default: relative)
 - `-h`      - Display the help screen
 - `-g`      - Show if commit is GPG signed or not
+- `-f`      - Fetch the latest commits beforehand
 
 For the basic usage, all you have to do is run `git standup` in a repository or a folder containing multiple repositories
 
@@ -150,6 +152,16 @@ If you want to change this, like I want because here in Dubai working days are n
 $ git standup -w "SUN-THU"
 ```
 
+## Fetch commits before showing standup
+
+If you have many repositories that you want to generate a standup for, it may be useful to automatically run `git fetch` before viewing the standup.
+
+If you would like to automatically run `git fetch --all` before printing the standup, you can add the `-f` flag, as show below
+
+```bash
+$ git standup -f
+```
+
 ## Mixing options
 
 Of course you can mix the options together but please note that if you provide the number of days, it will override the weekdays configuration (`MON-FRI`) and will show you the commits specifically from `n` days ago.
@@ -161,7 +173,7 @@ $ git standup -a "John Doe" -d 5
 
 ## Motivation
 
-We have daily standups at our workplace and to check my deeds of the day, I was used to using git log or checking the heat map on my github profile and it seemed to be a bit cumbersome. To automate it, I searched and came across some of [the](http://code.joejag.com/2013/everyday-git-aliases.html) [aliases](https://coderwall.com/p/f4shwg/git-for-daily-standup) [and](https://gist.github.com/pathikrit/fb75ba009960c4ed9ddf) [snippets](https://github.com/stephenmathieson/git-standup) that people had been using but none of them directly served my purpose and so I spent a little time over the weekend to write this utility. Previously, I wrote it just for me but then I went ahead and made it a bit more generic and put it on github for others to use. And this is how git-standup was born.
+We have daily standup meetings at our workplace and I was used to checking the heat map on my Github profile or running git log (one by one in each of the projects) to note what I did and it seemed to be a bit cumbersome. To automate it, I searched and came across some of [the](http://code.joejag.com/2013/everyday-git-aliases.html) [aliases](https://coderwall.com/p/f4shwg/git-for-daily-standup) [and](https://gist.github.com/pathikrit/fb75ba009960c4ed9ddf) [snippets](https://github.com/stephenmathieson/git-standup) that people had been using but none of them directly served my purpose and so I spent a little time over the weekend to write this utility.
 
 ## License
 
