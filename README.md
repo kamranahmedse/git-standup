@@ -36,8 +36,9 @@ $ brew install git-standup
 ```bash
 $ git standup [-a <author name>] 
               [-w <weekstart-weekend>] 
-              [-d <days-ago>] 
               [-m <max-dir-depth>] 
+              [-L]
+              [-d <days-ago>]
               [-D <date-format>] 
               [-g] 
               [-h]
@@ -48,6 +49,7 @@ Below is the description for each of the flags
 - `-a`      - Specify author to restrict search to
 - `-w`      - Specify weekday range to limit search to
 - `-m`      - Specify the depth of recursive directory search
+- `-L`      - Toggle inclusion of symbolic links in recursive directory search
 - `-d`      - Specify the number of days back to include
 - `-D`      - Specify the date format for "git log" (default: relative)
 - `-h`      - Display the help screen
