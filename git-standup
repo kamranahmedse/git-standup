@@ -184,6 +184,7 @@ if [[ ! -d ".git" ]]; then
   for DIR in $PROJECT_DIRS; do
 
     cd "`dirname $DIR`"
+    CUR_DIR=`pwd`
 
     ## Show the detail only if it is a git repository
     if [[ -d ".git" ]] ; then
