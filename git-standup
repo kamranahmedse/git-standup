@@ -150,14 +150,14 @@ GIT_LOG_COMMAND="git --no-pager log \
 
 
 ## For when the command has been run in a non-repo directory
-if [[ ! -d ".git" ]]; then
+if [[ ! -d ".git" || -f ".git" ]]; then
   BASE_DIR=`pwd`
 
   ## Set delimiter to newline for the loop
   IFS=$'\n'
 
   ## Recursively search for git repositories
-  PROJECT_DIRS=`find $INCLUDE_LINKS . -maxdepth $MAXDEPTH -mindepth 0 -name .git -type d`
+  PROJECT_DIRS=`find $INCLUDE_LINKS . -maxdepth $MAXDEPTH -mindepth 0 -name .git`
 
   # Fetch the latest commits, if required
   if [[ $option_f ]]; then
@@ -187,7 +187,7 @@ if [[ ! -d ".git" ]]; then
     CUR_DIR=`pwd`
 
     ## Show the detail only if it is a git repository
-    if [[ -d ".git" ]] ; then
+    if [[ -d ".git" || -f ".git" ]] ; then
       {
         GITOUT=$(eval ${GIT_LOG_COMMAND} 2>/dev/null )
       } || {
