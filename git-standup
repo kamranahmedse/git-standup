@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+SELECTED_OPTION=
+REPORT_FILENAME="git-work-report.txt"
+
 # Shows the usage
 function usage() {
   cat <<EOS
@@ -15,6 +18,7 @@ Usage:
   -h      - Display this help screen
   -g      - Show if commit is GPG signed (G) or not (N)
   -f      - Fetch the latest commits beforehand
+  -r      - Generate report
 
 Examples:
   git standup -a "John Doe" -w "MON-FRI" -m 3
@@ -46,17 +50,23 @@ function uncolored() {
   BOLD=""
   UNDERLINE=""
   NORMAL=""
-  GIT_PRETTY_FORMAT='%h - %s (%cd) <%an>'
+  GIT_PRETTY_FORMAT='%h - %s (%cd) <%an>\n'
 
   if [[ $option_g ]] ; then
     GIT_PRETTY_FORMAT="$GIT_PRETTY_FORMAT gpg: %G?"
   fi
 }
 
-while getopts "hgfd:a:w:m:D:L" opt; do
+# write output file
+function writeFile() {
+  echo -e $1 > $REPORT_FILENAME
+} 
+
+while getopts "rhgfd:a:w:m:D:L" opt; do
   case $opt in
-    h|d|a|w|m|g|D|f|L)
+    h|d|a|w|m|g|D|f|L|r)
       declare "option_$opt=${OPTARG:-0}"
+      SELECTED_OPTION=$opt
       ;;
     \?)
       echo >&2 "Use 'git standup -h' to see usage info"
@@ -85,7 +95,7 @@ fi
 # supports them.
 if [[ -t 1 ]] && [[ -n "$TERM" ]] && which tput &>/dev/null && tput colors &>/dev/null; then
   ncolors=$(tput colors)
-  if [[ -n "$ncolors" ]] && [[ "$ncolors" -ge 8 ]] ; then
+  if [[ -n "$ncolors" ]] && [[ "$ncolors" -ge 8 ]] && [[ !($SELECTED_OPTION == "r") ]] ; then
     colored
   else
     uncolored
@@ -220,6 +230,10 @@ else
 
   if [[ ! -z "$GITOUT" ]] ;  then
     echo "$GITOUT"
+    if [[ $SELECTED_OPTION = 'r' ]]; then
+      writeFile "$GITOUT"
+      echo "Report has been created <$REPORT_FILENAME>"
+    fi
   else
 
     if [[ $AUTHOR = '.*' ]] ; then
