@@ -89,6 +89,10 @@ level deep. If you want to increase that, use the `-m` switch.
 $ git standup -m 3
 ```
 
+### Directory whitelisting
+If you want to restrict the search path you can whitelist which directories
+to search in by adding them to a `.git-standup-whitelist` file.
+
 ## Checking someone else's commits
 
 If you want to find out someone else's commits do

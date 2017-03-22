@@ -156,8 +156,14 @@ if [[ ! -d ".git" || -f ".git" ]]; then
   ## Set delimiter to newline for the loop
   IFS=$'\n'
 
+  if [[ -f ".git-standup-whitelist" ]]; then
+      SEARCH_PATH=`cat .git-standup-whitelist`
+  else
+      SEARCH_PATH=.
+  fi
+
   ## Recursively search for git repositories
-  PROJECT_DIRS=`find $INCLUDE_LINKS . -maxdepth $MAXDEPTH -mindepth 0 -name .git`
+  PROJECT_DIRS=`find $INCLUDE_LINKS $SEARCH_PATH -maxdepth $MAXDEPTH -mindepth 0 -name .git`
 
   # Fetch the latest commits, if required
   if [[ $option_f ]]; then
