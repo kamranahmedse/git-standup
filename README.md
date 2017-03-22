@@ -24,11 +24,17 @@ $ cd git-standup
 $ sudo make install
 ```
 
-Also, you can install it using `brew`
+Mac users can install it using `brew`
 
 ```
 $ brew update
 $ brew install git-standup
+```
+
+Arch users can find a [package](https://aur.archlinux.org/packages/git-standup-git/) in the [AUR](https://aur.archlinux.org/)
+
+```
+$ pacaur -S git-standup-git
 ```
 
 ## Usage
