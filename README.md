@@ -1,3 +1,5 @@
+![git standup](http://i.imgur.com/wyo4s9E.gif)
+
 # git-standup
 
 > Recall what you did on the last working day ..or be nosy and find what someone else did.
