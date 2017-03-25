@@ -53,6 +53,25 @@ function uncolored() {
   fi
 }
 
+function gitlog() {
+  if [[ -d ".git" || -f ".git" ]]; then
+    {
+      GITOUT=$(eval ${GIT_LOG_COMMAND} 2>/dev/null )
+    } || {
+      GITOUT=""
+    } 
+    ## Only output if there is some activity
+    if [[ ! -z "$GITOUT" ]] ;  then
+      echo "$GITOUT"
+    else
+      if [[ $AUTHOR = '.*' ]] ; then
+        AUTHOR="all the contributors"
+      fi  
+      echo "${YELLOW}Seems like $AUTHOR did nothing!${NORMAL}"
+    fi
+  fi 
+}
+
 while getopts "hgfd:a:w:m:D:L" opt; do
   case $opt in
     h|d|a|w|m|g|D|f|L)
@@ -152,16 +171,28 @@ GIT_LOG_COMMAND="git --no-pager log \
 ## For when the command has been run in a non-repo directory
 if [[ ! -d ".git" || -f ".git" ]]; then
   BASE_DIR=`pwd`
-
   ## Set delimiter to newline for the loop
   IFS=$'\n'
 
   ## Recursively search for git repositories
   PROJECT_DIRS=`find $INCLUDE_LINKS . -maxdepth $MAXDEPTH -mindepth 0 -name .git`
+  
+  ## If we can't find any projects below us, we might be in a sub-directory of a git repo
+  if [[ -z $PROJECT_DIRS ]]; then
+    PROJECT_ROOT=`git rev-parse --show-toplevel`
+    {
+      cd $PROJECT_ROOT
+    } || { 
+      echo "You are not in a git repository"
+    }
+    CUR_DIR=`pwd`
+    BASENAME=`basename "$CUR_DIR"`
+    gitlog
+    exit 0;
+  fi
 
   # Fetch the latest commits, if required
   if [[ $option_f ]]; then
-
     echo "${BOLD}${GREEN}Fetching commits ..${NORMAL}"
 
     # Foreach of the project directories, fetch the commits
@@ -211,21 +242,5 @@ else
     echo "${GREEN}Fetching commits ..${NORMAL}"
     git fetch --all > /dev/null 2>&1
   fi
-
-  {
-    GITOUT=$(eval ${GIT_LOG_COMMAND} 2>/dev/null )
-  } || {
-    GITOUT=""
-  }
-
-  if [[ ! -z "$GITOUT" ]] ;  then
-    echo "$GITOUT"
-  else
-
-    if [[ $AUTHOR = '.*' ]] ; then
-      AUTHOR="all the contributors"
-    fi
-
-    echo "${YELLOW}Seems like $AUTHOR did nothing!${NORMAL}"
-  fi
+  gitlog
 fi
