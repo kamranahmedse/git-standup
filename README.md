@@ -62,6 +62,7 @@ Below is the description for each of the flags
 - `-h`      - Display the help screen
 - `-g`      - Show if commit is GPG signed or not
 - `-f`      - Fetch the latest commits beforehand
+- `-r`      - Generate report
 
 For the basic usage, all you have to do is run `git standup` in a repository or a folder containing multiple repositories
 
