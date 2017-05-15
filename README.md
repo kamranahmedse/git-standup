@@ -19,9 +19,11 @@ $ npm install -g git-standup
 Or by cloning and manually installing it
 
 ```bash
-$ git clone https://github.com/kamranahmedse/git-standup.git
+$ git clone https://github.com/kamranahmedse/git-standup.git --depth=1
 $ cd git-standup
 $ sudo make install
+$ cd ..
+$ rm -rf git-standup
 ```
 
 Mac users can install it using `brew`
