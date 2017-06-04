@@ -1,0 +1,93 @@
+git-standup(1)
+==============
+
+NAME
+----
+git-standup - Recall what you did on the last working day
+
+SYNOPSIS
+--------
+*git standup* [*-a* _<author name>_]
+              [*-D* _<date format>_]
+              [*-L*]
+              [*-d* _<days ago>_]
+              [*-f*]
+              [*-g*]
+              [*-m* _<max directoy depth>_]
+              [*-w* _<weekstart-weekend>_]
+
+*git standup* *-h*
+
+DESCRIPTION
+-----------
+Recall what you did on the last working day ... or be nosy and find what
+someone else did.
+
+Running this command in a Git repository will only search the commits for that
+specific reposity. However, when outside a repository, all subdirectories will
+be searched recursively.
+
+OPTIONS
+-------
+*-a* _author_::
+  Only show results for authors that match _author_, it can be a name or
+  an email address.
+  If _author_ is "all", commits by everyone will be shown.
+
+*-D* _format_::
+  Specify the date format for _git log_. If not specified, the default is
+  "relative". _format_ can be any value that _git log --date_ accepts.
+
+*-L*::
+  Toggle inclusion of symbolic links in recursive directory search.
+
+*-d* _num_::
+  Show commits since _num_ days ago. +
+  Overrides the *-w* option.
+
+*-f*::
+  Fetch the latest commits beforehand. This is useful when there are many
+  repositories you want to generate a standup for; _git fetch --all_ will
+  automatically run before printing the standup.
+
+*-g*::
+  Show if a commit if GPG signed or not.
+
+*-h*::
+  Prints a usage message.
+
+*-m* _depth_::
+  Search upto _depth_ directories inside the current working directory.
+
+*-w* _range_::
+  By default, it considers that the work week starts on Monday and ends on
+  Friday. So if you are running this on any day between Tuesday and Friday, it
+  will show you commits from the last day. However, if you are running this on
+  Monday, it will show you commits since Friday. +
+  If you want to change the work week to Sunday to Thrusday, _range_ will be
+  "SUN-THU". +
+  This is overridden by the *-d* option.
+
+BUGS
+----
+Please submit an issue at https://github.com/kamranahmedse/git-standup/issues
+
+RESOURCES
+---------
+Main web site: https://github.com/kamranahmedse/git-standup
+
+EXAMPLE
+--------
+Showing commits by anyone in the last three months is done by:
+[source,console]
+----
+$ git standup -a "all" -d 90
+9fbe2cc - Add MIT License file (#74) (3 weeks ago) <Andrew Petro>
+17f03cd - Remove hugobots reference (9 weeks ago) <Kamran Ahmed>
+350e244 - Add AUR package to readme. (#65) (2 months ago) <Michael Hauser-Raspe>
+5ae7d15 - Add the link to hugobots (2 months ago) <Kamran Ahmed>
+----
+
+SEE ALSO
+--------
+*git-log*(1)
