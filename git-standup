@@ -31,6 +31,7 @@ function colored() {
   UNDERLINE=$(tput smul)
   NORMAL=$(tput sgr0)
   GIT_PRETTY_FORMAT='%Cred%h%Creset - %s %Cgreen(%cd) %C(bold blue)<%an>%Creset'
+  COLOR=always
 
   if [[ $option_g ]] ; then
     GIT_PRETTY_FORMAT="$GIT_PRETTY_FORMAT %C(yellow)gpg: %G?%Creset"
@@ -47,6 +48,7 @@ function uncolored() {
   UNDERLINE=""
   NORMAL=""
   GIT_PRETTY_FORMAT='%h - %s (%cd) <%an>'
+  COLOR=never
 
   if [[ $option_g ]] ; then
     GIT_PRETTY_FORMAT="$GIT_PRETTY_FORMAT gpg: %G?"
@@ -146,8 +148,8 @@ GIT_LOG_COMMAND="git --no-pager log \
     --abbrev-commit
     --oneline
     --pretty=format:'$GIT_PRETTY_FORMAT'
-    --date='$GIT_DATE_FORMAT'"
-
+    --date='$GIT_DATE_FORMAT'
+    --color=$COLOR"
 
 ## For when the command has been run in a non-repo directory
 if [[ ! -d ".git" || -f ".git" ]]; then
