@@ -4,13 +4,14 @@
 function usage() {
   cat <<EOS
 Usage:
-  git standup [-a <author name>] [-w <weekstart-weekend>] [-d <days-ago>] [-m <max-dir-depth>] [-g] [-h] [-f]
+  git standup [-a <author name>] [-w <weekstart-weekend>] [-d <since-days-ago>] [-u <until-days-ago>] [-m <max-dir-depth>] [-g] [-h] [-f]
 
   -a      - Specify author to restrict search to
   -w      - Specify weekday range to limit search to
   -m      - Specify the depth of recursive directory search
   -L      - Toggle inclusion of symbolic links in recursive directory search
   -d      - Specify the number of days back to include
+  -u      - Specify the number of days back until this day
   -D      - Specify the date format for "git log" (default: relative)
   -h      - Display this help screen
   -g      - Show if commit is GPG signed (G) or not (N)
@@ -55,9 +56,9 @@ function uncolored() {
   fi
 }
 
-while getopts "hgfd:a:w:m:D:L" opt; do
+while getopts "hgfd:u:a:w:m:D:L" opt; do
   case $opt in
-    h|d|a|w|m|g|D|f|L)
+    h|d|u|a|w|m|g|D|f|L)
       declare "option_$opt=${OPTARG:-0}"
       ;;
     \?)
@@ -138,12 +139,18 @@ else
   fi
 fi
 
+## If -u flag is there, use its value for the until
+if [[ $option_u ]] && [[ $option_u -ne 0 ]] ; then
+  UNTIL_OPT="--until=\"$option_u days ago\""
+fi
+
 GIT_DATE_FORMAT=${option_D:-relative}
 
 GIT_LOG_COMMAND="git --no-pager log \
     --all
     --no-merges
     --since=\"$SINCE\"
+    ${UNTIL_OPT}
     --author=\"$AUTHOR\"
     --abbrev-commit
     --oneline
