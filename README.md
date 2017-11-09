@@ -90,8 +90,23 @@ $ git standup -m 3
 ```
 
 ### Directory whitelisting
-If you want to restrict the search path you can whitelist which directories
-to search in by adding them to a `.git-standup-whitelist` file.
+
+If you want to restrict the standup to some paths, you can whitelist them by adding them to a `.git-standup-whitelist` file. For example if you have the below directory structure
+
+    ├── Workspace				# All your projects are here
+    │   ├── project-a           # Some git repository called project-a
+    │   ├── project-b           # Some git repository called project-b
+    │   ├── sketch-files        # Some sketch files
+    │   ├── mockups		          # Some balsamiq mockups
+    │   └── ...                 # etc.
+    └── ...
+
+And you want the `git-standup` to show logs for only `project-a` and `project-b`, you can do that by creating a `.git-standup-whitelist` file under the `Workspace` directory with the below contents and it will only consider these directories for the standup
+
+```
+project-a
+project-b
+```
 
 ## Checking someone else's commits
 
