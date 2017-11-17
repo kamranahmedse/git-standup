@@ -95,6 +95,25 @@ level deep. If you want to increase that, use the `-m` switch.
 $ git standup -m 3
 ```
 
+### Directory whitelisting
+
+If you want to restrict the standup to some paths, you can whitelist them by adding them to a `.git-standup-whitelist` file. For example if you have the below directory structure
+
+    ├── Workspace				# All your projects are here
+    │   ├── project-a           # Some git repository called project-a
+    │   ├── project-b           # Some git repository called project-b
+    │   ├── sketch-files        # Some sketch files
+    │   ├── mockups		          # Some balsamiq mockups
+    │   └── ...                 # etc.
+    └── ...
+
+And you want the `git-standup` to show logs for only `project-a` and `project-b`, you can do that by creating a `.git-standup-whitelist` file under the `Workspace` directory with the below contents and it will only consider these directories for the standup
+
+```
+project-a
+project-b
+```
+
 ## Checking someone else's commits
 
 If you want to find out someone else's commits do
@@ -180,12 +199,6 @@ $ git standup -a "John Doe" -d 5
 ## Motivation
 
 We have daily standup meetings at our workplace and I was used to checking the heat map on my Github profile or running git log (one by one in each of the projects) to note what I did and it seemed to be a bit cumbersome. To automate it, I searched and came across some of [the](http://code.joejag.com/2013/everyday-git-aliases.html) [aliases](https://coderwall.com/p/f4shwg/git-for-daily-standup) [and](https://gist.github.com/pathikrit/fb75ba009960c4ed9ddf) [snippets](https://github.com/stephenmathieson/git-standup) that people had been using but none of them directly served my purpose and so I spent a little time over the weekend to write this utility.
-
-***
-
-<p align="center"><b> Want to learn something new?</b><br>Visit <a href="http://hugobots.com">Hugobots</a> where I teach people</p>
-
-***
 
 
 ## License

@@ -4,13 +4,14 @@
 function usage() {
   cat <<EOS
 Usage:
-  git standup [-a <author name>] [-w <weekstart-weekend>] [-d <days-ago>] [-m <max-dir-depth>] [-g] [-h] [-f]
+  git standup [-a <author name>] [-w <weekstart-weekend>] [-d <since-days-ago>] [-u <until-days-ago>] [-m <max-dir-depth>] [-g] [-h] [-f]
 
   -a      - Specify author to restrict search to
   -w      - Specify weekday range to limit search to
   -m      - Specify the depth of recursive directory search
   -L      - Toggle inclusion of symbolic links in recursive directory search
   -d      - Specify the number of days back to include
+  -u      - Specify the number of days back until this day
   -D      - Specify the date format for "git log" (default: relative)
   -h      - Display this help screen
   -g      - Show if commit is GPG signed (G) or not (N)
@@ -31,6 +32,7 @@ function colored() {
   UNDERLINE=$(tput smul)
   NORMAL=$(tput sgr0)
   GIT_PRETTY_FORMAT='%Cred%h%Creset - %s %Cgreen(%cd) %C(bold blue)<%an>%Creset'
+  COLOR=always
 
   if [[ $option_g ]] ; then
     GIT_PRETTY_FORMAT="$GIT_PRETTY_FORMAT %C(yellow)gpg: %G?%Creset"
@@ -47,6 +49,7 @@ function uncolored() {
   UNDERLINE=""
   NORMAL=""
   GIT_PRETTY_FORMAT='%h - %s (%cd) <%an>'
+  COLOR=never
 
   if [[ $option_g ]] ; then
     GIT_PRETTY_FORMAT="$GIT_PRETTY_FORMAT gpg: %G?"
@@ -54,27 +57,32 @@ function uncolored() {
 }
 
 function gitlog() {
-  if [[ -d ".git" || -f ".git" ]]; then
-    {
-      GITOUT=$(eval ${GIT_LOG_COMMAND} 2>/dev/null )
-    } || {
-      GITOUT=""
-    } 
-    ## Only output if there is some activity
-    if [[ ! -z "$GITOUT" ]] ;  then
-      echo "$GITOUT"
-    else
-      if [[ $AUTHOR = '.*' ]] ; then
-        AUTHOR="all the contributors"
-      fi  
-      echo "${YELLOW}Seems like $AUTHOR did nothing!${NORMAL}"
+  if [[ $option_f ]]; then
+    echo "${GREEN}Fetching commits ..${NORMAL}"
+    git fetch --all > /dev/null 2>&1
+  fi
+
+  {
+    GITOUT=$(eval ${GIT_LOG_COMMAND} 2>/dev/null )
+  } || {
+    GITOUT=""
+  }
+
+  if [[ ! -z "$GITOUT" ]] ;  then
+    echo "$GITOUT"
+  else
+
+    if [[ $AUTHOR = '.*' ]] ; then
+      AUTHOR="all the contributors"
     fi
-  fi 
+
+    echo "${YELLOW}Seems like $AUTHOR did nothing!${NORMAL}"
+  fi
 }
 
-while getopts "hgfd:a:w:m:D:L" opt; do
+while getopts "hgfd:u:a:w:m:D:L" opt; do
   case $opt in
-    h|d|a|w|m|g|D|f|L)
+    h|d|u|a|w|m|g|D|f|L)
       declare "option_$opt=${OPTARG:-0}"
       ;;
     \?)
@@ -155,44 +163,44 @@ else
   fi
 fi
 
+## If -u flag is there, use its value for the until
+if [[ $option_u ]] && [[ $option_u -ne 0 ]] ; then
+  UNTIL_OPT="--until=\"$option_u days ago\""
+fi
+
 GIT_DATE_FORMAT=${option_D:-relative}
 
 GIT_LOG_COMMAND="git --no-pager log \
     --all
     --no-merges
     --since=\"$SINCE\"
+    ${UNTIL_OPT}
     --author=\"$AUTHOR\"
     --abbrev-commit
     --oneline
     --pretty=format:'$GIT_PRETTY_FORMAT'
-    --date='$GIT_DATE_FORMAT'"
-
+    --date='$GIT_DATE_FORMAT'
+    --color=$COLOR"
 
 ## For when the command has been run in a non-repo directory
 if [[ ! -d ".git" || -f ".git" ]]; then
   BASE_DIR=`pwd`
+
   ## Set delimiter to newline for the loop
   IFS=$'\n'
 
-  ## Recursively search for git repositories
-  PROJECT_DIRS=`find $INCLUDE_LINKS . -maxdepth $MAXDEPTH -mindepth 0 -name .git`
-  
-  ## If we can't find any projects below us, we might be in a sub-directory of a git repo
-  if [[ -z $PROJECT_DIRS ]]; then
-    PROJECT_ROOT=`git rev-parse --show-toplevel`
-    {
-      cd $PROJECT_ROOT
-    } || { 
-      echo "You are not in a git repository"
-    }
-    CUR_DIR=`pwd`
-    BASENAME=`basename "$CUR_DIR"`
-    gitlog
-    exit 0;
+  if [[ -f ".git-standup-whitelist" ]]; then
+      SEARCH_PATH=`cat .git-standup-whitelist`
+  else
+      SEARCH_PATH=.
   fi
+
+  ## Recursively search for git repositories
+  PROJECT_DIRS=`find $INCLUDE_LINKS $SEARCH_PATH -maxdepth $MAXDEPTH -mindepth 0 -name .git`
 
   # Fetch the latest commits, if required
   if [[ $option_f ]]; then
+
     echo "${BOLD}${GREEN}Fetching commits ..${NORMAL}"
 
     # Foreach of the project directories, fetch the commits
@@ -232,15 +240,23 @@ if [[ ! -d ".git" || -f ".git" ]]; then
         echo "$GITOUT"
       fi
     fi
-
     cd $BASE_DIR
   done
 
-else
-
-  if [[ $option_f ]]; then
-    echo "${GREEN}Fetching commits ..${NORMAL}"
-    git fetch --all > /dev/null 2>&1
+  ## If we can't find any projects below us, we might be in a sub-directory of a git repo
+  if [[ -z $PROJECT_DIRS ]]; then
+    PROJECT_ROOT=`git rev-parse --show-toplevel`
+    {
+      cd $PROJECT_ROOT
+    } || {
+      echo "You are not in a git repository"
+    }
+    CUR_DIR=`pwd`
+    BASENAME=`basename "$CUR_DIR"`
+    gitlog
+    exit 0;
   fi
+
+else
   gitlog
 fi
