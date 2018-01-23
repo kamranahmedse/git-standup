@@ -1,13 +1,13 @@
-prefix=/usr/local
-exec_prefix=$(prefix)
-bindir=$(exec_prefix)/bin
-datarootdir=$(prefix)/share
-datadir=$(datarootdir)
-mandir=$(datarootdir)/man
-man1_dir=$(mandir)/man1
+PREFIX ?= /usr/local
+EXEC_PREFIX ?= $(PREFIX)
+BINDIR ?= $(EXEC_PREFIX)/bin
+DATAROOTDIR ?= $(PREFIX)/share
+DATADIR ?= $(DATAROOTDIR)
+MANDIR ?= $(DATAROOTDIR)/man
+MAN1DIR ?= $(MANDIR)/man1
 
 # files that need mode 755
-EXEC_FILES=git-standup
+EXEC_FILES = git-standup
 
 .PHONY: all install uninstall
 
@@ -20,15 +20,15 @@ git-standup.1.gz: git-standup.1
 	gzip -fk $<
 
 install: git-standup.1.gz
-	mkdir -p $(bindir) $(man1_dir)
-	install -m 0755 $(EXEC_FILES) $(bindir)
-	install -m 0644 "git-standup.1.gz" $(man1_dir)
+	mkdir -p $(BINDIR)
+	install -m 0755 $(EXEC_FILES) $(BINDIR)
+	install -m 0644 "git-standup.1.gz" $(MAN1DIR)
 
 man: git-standup.1.gz
 
 uninstall:
-	test -d $(bindir) && \
-	cd $(bindir) && \
+	test -d $(BINDIR) && \
+	cd $(BINDIR) && \
 	rm -f $(EXEC_FILES)
-	test -f "$(man1_dir)/git-standup.1.gz" && \
-	rm -f "$(man1_dir)/git-standup.1.gz"
+	test -f "$(MAN1DIR)/git-standup.1.gz" && \
+	rm -f "$(MAN1DIR)/git-standup.1.gz"
