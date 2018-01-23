@@ -1,0 +1,126 @@
+.TH "GIT-STANDUP" "1" "2018-01-22" "v2.1.7" "Git Manual"
+
+.\"----------------------------------------------------------------------
+.SH "NAME"
+.\"----------------------------------------------------------------------
+
+git-standup \- recall what you did on the last working day
+
+.\"----------------------------------------------------------------------
+.SH "SYNOPSIS"
+.\"----------------------------------------------------------------------
+.\" keep single-character options at the start, alphabetize the remaining
+.SY "git standup"
+.OP \-Lfg
+.OP \-a "author"
+.OP \-D "date format"
+.OP \-d "days ago"
+.OP \-m "max directory depth"
+.OP \-w "weekstart\(enweekend"
+.YS
+
+.SY "git standup"
+.B \-h
+.YS
+
+.\"----------------------------------------------------------------------
+.SH "DESCRIPTION"
+.\"----------------------------------------------------------------------
+
+Recall what you did on the last working day ... or be nosy and find out
+what someone else did.
+Running this command in a Git repository will only search the commits for
+that specific repository.
+However, when outside a repository, all subdirectories will be searched
+recursively.
+
+.\"----------------------------------------------------------------------
+.SH "OPTIONS"
+.\"----------------------------------------------------------------------
+.\" keep these sorted in the order that they're listed in the SYNOPSIS
+.TP
+.BI "\-L"
+Enable inclusion of symbolic links in recursive directory search.
+.TP
+.BI "\-f"
+Fetch the latest commits beforehand.
+This is useful when there are many repositories you want to generate a
+standup for; \fIgit fetch --all\fR will automatically run before printing
+the standup.
+.TP
+.BI "\-g"
+Show if a commit is GPG signed or not.
+.TP
+.BI "\-h"
+Prints a usage message.
+.TP
+.BI "\-a"\ author
+Only show results for commit authors that match \fIauthor\fR, it can be a
+name, an email address, or "all".
+.TP
+.BI "\-D"\ format
+Specify the date format for \fIgit log\fR.
+If not specified, the default is "relative".
+\fIformat\fR can be any value that \fIgit log --date\fR accepts.
+.TP
+.BI "\-d"\ num
+Show commits since \fInum\fR days ago.
+
+Overrides the \fI\-w\fR option.
+.TP
+.BI "\-m"\ depth
+Search upto \fIdepth\fR directories inside the current working directory.
+.TP
+.BI "\-w"\ range
+By default, git-standup considers that the work week starts on Monday and
+ends on Friday.
+So if you are running this on any day between Tuesday and
+Friday, it will show you commit from the last day.
+However, if you are running this on Monday, it will show you commits since
+Friday.
+
+If you want to change the work week to Sunday to Thursday, \fIrange\fR will
+be "SUN-THU".
+
+Overridden by the \fI\-d\fR option.
+
+.\"----------------------------------------------------------------------
+.SH "BUGS"
+.\"----------------------------------------------------------------------
+
+Please submit an issue at
+.UR https://github.com/kamranahmedse/git-standup/issues
+.UE .
+
+.\"----------------------------------------------------------------------
+.SH "RESOURCES"
+.\"----------------------------------------------------------------------
+
+.IP \(bu 4
+Main website:
+.UR https://github.com/kamranahmedse/git-standup
+.UE .
+.RE
+
+.\"----------------------------------------------------------------------
+.SH "EXAMPLE"
+.\"----------------------------------------------------------------------
+
+Showing commits by anyone in the last three month is done by:
+.PP
+.in +4n
+.EX
+$ \fBgit standup \-a "all" \-d 90\fR
+9fbe2cc - Add MIT Livense file (#74) (3 weeks ago) <Andrew Petro>
+17f03cd - Remove hugobots reference (#65) (9 weeks ago) <Kamran Ahmed>
+350e244 - Add AUR package to readme. (#65) (2 months ago) <Michael Hause-Raspe>
+5ae7d15 - Add the link to hugobots (2 moths ago) <Kamran Ahmed>
+.EE
+.in
+
+.\"----------------------------------------------------------------------
+.SH "SEE ALSO"
+.\"----------------------------------------------------------------------
+
+.BR git\-log (1)
+.\" vim:tw=75:

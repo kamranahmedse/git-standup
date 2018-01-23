@@ -16,11 +16,8 @@ all:
 	@echo "       make uninstall"
 	@echo "       make man"
 
-git-standup.1: git-standup.1.asciidoc
-	a2x -Lf manpage $<
-
 git-standup.1.gz: git-standup.1
-	gzip -f $<
+	gzip -fk $<
 
 install: git-standup.1.gz
 	mkdir -p $(bindir) $(man1_dir)
