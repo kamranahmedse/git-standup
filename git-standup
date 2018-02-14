@@ -56,6 +56,30 @@ function uncolored() {
   fi
 }
 
+function gitlog() {
+  if [[ $option_f ]]; then
+    echo "${GREEN}Fetching commits ..${NORMAL}"
+    git fetch --all > /dev/null 2>&1
+  fi
+
+  {
+    GITOUT=$(eval ${GIT_LOG_COMMAND} 2>/dev/null )
+  } || {
+    GITOUT=""
+  }
+
+  if [[ ! -z "$GITOUT" ]] ;  then
+    echo "$GITOUT"
+  else
+
+    if [[ $AUTHOR = '.*' ]] ; then
+      AUTHOR="all the contributors"
+    fi
+
+    echo "${YELLOW}Seems like $AUTHOR did nothing!${NORMAL}"
+  fi
+}
+
 while getopts "hgfd:u:a:w:m:D:L" opt; do
   case $opt in
     h|d|u|a|w|m|g|D|f|L)
@@ -216,31 +240,23 @@ if [[ ! -d ".git" || -f ".git" ]]; then
         echo "$GITOUT"
       fi
     fi
-
     cd $BASE_DIR
   done
 
+  ## If we can't find any projects below us, we might be in a sub-directory of a git repo
+  if [[ -z $PROJECT_DIRS ]]; then
+    PROJECT_ROOT=`git rev-parse --show-toplevel`
+    {
+      cd $PROJECT_ROOT
+    } || {
+      echo "You are not in a git repository"
+    }
+    CUR_DIR=`pwd`
+    BASENAME=`basename "$CUR_DIR"`
+    gitlog
+    exit 0;
+  fi
+
 else
-
-  if [[ $option_f ]]; then
-    echo "${GREEN}Fetching commits ..${NORMAL}"
-    git fetch --all > /dev/null 2>&1
-  fi
-
-  {
-    GITOUT=$(eval ${GIT_LOG_COMMAND} 2>/dev/null )
-  } || {
-    GITOUT=""
-  }
-
-  if [[ ! -z "$GITOUT" ]] ;  then
-    echo "$GITOUT"
-  else
-
-    if [[ $AUTHOR = '.*' ]] ; then
-      AUTHOR="all the contributors"
-    fi
-
-    echo "${YELLOW}Seems like $AUTHOR did nothing!${NORMAL}"
-  fi
+  gitlog
 fi
