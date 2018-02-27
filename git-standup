@@ -16,6 +16,7 @@ Usage:
   -h      - Display this help screen
   -g      - Show if commit is GPG signed (G) or not (N)
   -f      - Fetch the latest commits beforehand
+  -s      - Silences the no activity by user message (useful when running in a directory having many repositories)
 
 Examples:
   git standup -a "John Doe" -w "MON-FRI" -m 3
@@ -56,9 +57,9 @@ function uncolored() {
   fi
 }
 
-while getopts "hgfd:u:a:w:m:D:Lr" opt; do
+while getopts "hgfsd:u:a:w:m:D:Lr" opt; do
   case $opt in
-    h|d|u|a|w|m|g|D|f|L)
+    h|d|u|a|w|m|g|D|f|s|L)
       declare "option_$opt=${OPTARG:-0}"
       ;;
     \?)
@@ -199,13 +200,14 @@ for DIR in ${PROJECT_DIRS}; do
     GITOUT=""
   }
 
-  # Directory heading
-  echo "${BOLD}${UNDERLINE}${YELLOW}$CUR_DIR${NORMAL}"
+
 
   ## Only output if there is some activity
   if [[ ! -z "$GITOUT" ]] ;  then
+    echo "${BOLD}${UNDERLINE}${YELLOW}$CUR_DIR${NORMAL}"
     echo "$GITOUT"
-  else
+  elif [[ -z $option_s ]] ; then  ## Show the no activity message only if the `s` flag is not there
+    echo "${BOLD}${UNDERLINE}${YELLOW}$CUR_DIR${NORMAL}"
     if [[ ${AUTHOR} = '.*' ]] ; then
       echo "${YELLOW}Seems like no one did anything!${NORMAL}"
     else
