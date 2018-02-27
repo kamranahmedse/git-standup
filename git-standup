@@ -198,11 +198,25 @@ if [[ ! -d ".git" || -f ".git" ]]; then
 
   ## Recursively search for git repositories
   PROJECT_DIRS=`find ${INCLUDE_LINKS} ${SEARCH_PATH} -maxdepth ${MAXDEPTH} -mindepth 0 -name .git`
-else
+elif [[ -f ".git" || -d ".git" ]]; then
   PROJECT_DIRS=("`pwd`/.git")
 fi
 
-  # Foreach of the project directories
+## if project directories is still empty
+## we might be sitting inside a git repo
+if [[ -z ${PROJECT_DIRS} ]]; then
+  ROOT_DIR_COMMAND="git rev-parse --show-toplevel"
+  PROJECT_ROOT=$(eval ${ROOT_DIR_COMMAND} 2>/dev/null )
+
+  if [[ -z ${PROJECT_ROOT} ]]; then
+    echo "${YELLOW}You must be inside a git repository!${NORMAL}"
+    exit 0
+  fi
+
+  PROJECT_DIRS=("${PROJECT_ROOT}/.git")
+fi
+
+# Foreach of the project directories, run the standup
 for DIR in ${PROJECT_DIRS}; do
   cd "`dirname $DIR`"
   CUR_DIR=`pwd`
