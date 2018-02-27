@@ -48,7 +48,7 @@ function uncolored() {
   BOLD=""
   UNDERLINE=""
   NORMAL=""
-  GIT_PRETTY_FORMAT='%h - %s (%cd) <%an>'
+  GIT_PRETTY_FORMAT='%h - %s (%cd) <%an>\n'
   COLOR=never
 
   if [[ $option_g ]] ; then
@@ -56,7 +56,7 @@ function uncolored() {
   fi
 }
 
-while getopts "hgfd:u:a:w:m:D:L" opt; do
+while getopts "hgfd:u:a:w:m:D:Lr" opt; do
   case $opt in
     h|d|u|a|w|m|g|D|f|L)
       declare "option_$opt=${OPTARG:-0}"
@@ -76,16 +76,13 @@ if [[ $# -gt 0 ]]; then
   exit 1
 fi
 
-
 # Main script
-
 if [[ $option_h ]]; then
   usage
   exit 0
 fi
 
-# Use colors, but only if connected to a terminal, and that terminal
-# supports them.
+# Use colors, but only if connected to a terminal, and that terminal supports them.
 if [[ -t 1 ]] && [[ -n "$TERM" ]] && which tput &>/dev/null && tput colors &>/dev/null; then
   ncolors=$(tput colors)
   if [[ -n "$ncolors" ]] && [[ "$ncolors" -ge 8 ]] ; then
@@ -98,6 +95,7 @@ else
 fi
 
 ## Set the necessary variables for standup
+REPORT_FILENAME="git-standup-report.txt"
 AUTHOR=`git config user.name`
 SINCE="yesterday"
 MAXDEPTH=2
@@ -134,7 +132,7 @@ else
   ## In case it is the start of week, we need to
   ## show the commits since the last weekend
   shopt -s nocasematch
-  if [[ $WEEKSTART == "$(date +%a)" ]] ; then
+  if [[ ${WEEKSTART} == "$(date +%a)" ]] ; then
     SINCE="last $WEEKEND";
   fi
 fi
@@ -161,7 +159,6 @@ GIT_LOG_COMMAND="git --no-pager log \
 ## For when the command has been run in a non-repo directory
 if [[ ! -d ".git" || -f ".git" ]]; then
   BASE_DIR=`pwd`
-
   ## Set delimiter to newline for the loop
   IFS=$'\n'
 
@@ -172,58 +169,27 @@ if [[ ! -d ".git" || -f ".git" ]]; then
   fi
 
   ## Recursively search for git repositories
-  PROJECT_DIRS=`find $INCLUDE_LINKS $SEARCH_PATH -maxdepth $MAXDEPTH -mindepth 0 -name .git`
+  PROJECT_DIRS=`find ${INCLUDE_LINKS} ${SEARCH_PATH} -maxdepth ${MAXDEPTH} -mindepth 0 -name .git`
+else
+  PROJECT_DIRS=("`pwd`/.git")
+fi
+
+  # Foreach of the project directories
+for DIR in ${PROJECT_DIRS}; do
+  cd "`dirname $DIR`"
+  CUR_DIR=`pwd`
+  BASENAME=`basename "$CUR_DIR"`
+
+  # continue if not a git directory
+  if [[ ! -d ".git" || -f ".git" ]] ; then
+    cd ${BASE_DIR}
+    continue
+  fi
 
   # Fetch the latest commits, if required
   if [[ $option_f ]]; then
-
     echo "${BOLD}${GREEN}Fetching commits ..${NORMAL}"
-
-    # Foreach of the project directories, fetch the commits
-    for DIR in $PROJECT_DIRS; do
-
-      cd "`dirname $DIR`"
-      CUR_DIR=`pwd`
-      BASENAME=`basename "$CUR_DIR"`
-
-      if [[ -d ".git" ]] ; then
-        echo "   ${YELLOW}$BASENAME${NORMAL}"
-        git fetch --all > /dev/null 2>&1
-      fi
-
-      cd $BASE_DIR
-    done
-  fi
-
-  # Get the standup details for each of the projects
-  for DIR in $PROJECT_DIRS; do
-
-    cd "`dirname $DIR`"
-    CUR_DIR=`pwd`
-
-    ## Show the detail only if it is a git repository
-    if [[ -d ".git" || -f ".git" ]] ; then
-      {
-        GITOUT=$(eval ${GIT_LOG_COMMAND} 2>/dev/null )
-      } || {
-        GITOUT=""
-      }
-
-      ## Only output if there is some activity
-      if [[ ! -z "$GITOUT" ]] ;  then
-        # Directory heading
-        echo "${BOLD}${UNDERLINE}${YELLOW}$CUR_DIR${NORMAL}"
-        echo "$GITOUT"
-      fi
-    fi
-
-    cd $BASE_DIR
-  done
-
-else
-
-  if [[ $option_f ]]; then
-    echo "${GREEN}Fetching commits ..${NORMAL}"
+    echo "   ${YELLOW}$BASENAME${NORMAL}"
     git fetch --all > /dev/null 2>&1
   fi
 
@@ -233,14 +199,19 @@ else
     GITOUT=""
   }
 
+  # Directory heading
+  echo "${BOLD}${UNDERLINE}${YELLOW}$CUR_DIR${NORMAL}"
+
+  ## Only output if there is some activity
   if [[ ! -z "$GITOUT" ]] ;  then
     echo "$GITOUT"
   else
-
-    if [[ $AUTHOR = '.*' ]] ; then
-      AUTHOR="all the contributors"
+    if [[ ${AUTHOR} = '.*' ]] ; then
+      echo "${YELLOW}Seems like no one did anything!${NORMAL}"
+    else
+      echo "${YELLOW}Seems like $AUTHOR did nothing!${NORMAL}"
     fi
-
-    echo "${YELLOW}Seems like $AUTHOR did nothing!${NORMAL}"
   fi
-fi
+
+  cd ${BASE_DIR}
+done
