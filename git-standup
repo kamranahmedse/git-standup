@@ -57,6 +57,33 @@ function uncolored() {
   fi
 }
 
+function runStandup() {
+  # Fetch the latest commits, if required
+  if [[ $option_f ]]; then
+    echo "${BOLD}${GREEN}Fetching commits in ${YELLOW}${UNDERLINE}${BOLD}${BASENAME}${NORMAL}"
+    git fetch --all > /dev/null 2>&1
+  fi
+
+  {
+    GITOUT=$(eval ${GIT_LOG_COMMAND} 2>/dev/null )
+  } || {
+    GITOUT=""
+  }
+
+  ## Only output if there is some activity
+  if [[ ! -z "$GITOUT" ]] ;  then
+    echo "${BOLD}${UNDERLINE}${YELLOW}$CUR_DIR${NORMAL}"
+    echo "$GITOUT"
+  elif [[ -z $option_s ]] ; then  ## Show the no activity message only if the `s` flag is not there
+    echo "${BOLD}${UNDERLINE}${YELLOW}$CUR_DIR${NORMAL}"
+    if [[ ${AUTHOR} = '.*' ]] ; then
+      echo "${YELLOW}Seems like no one did anything!${NORMAL}"
+    else
+      echo "${YELLOW}Seems like $AUTHOR did nothing!${NORMAL}"
+    fi
+  fi
+}
+
 while getopts "hgfsd:u:a:w:m:D:Lr" opt; do
   case $opt in
     h|d|u|a|w|m|g|D|f|s|L)
@@ -187,33 +214,7 @@ for DIR in ${PROJECT_DIRS}; do
     continue
   fi
 
-  # Fetch the latest commits, if required
-  if [[ $option_f ]]; then
-    echo "${BOLD}${GREEN}Fetching commits ..${NORMAL}"
-    echo "   ${YELLOW}$BASENAME${NORMAL}"
-    git fetch --all > /dev/null 2>&1
-  fi
-
-  {
-    GITOUT=$(eval ${GIT_LOG_COMMAND} 2>/dev/null )
-  } || {
-    GITOUT=""
-  }
-
-
-
-  ## Only output if there is some activity
-  if [[ ! -z "$GITOUT" ]] ;  then
-    echo "${BOLD}${UNDERLINE}${YELLOW}$CUR_DIR${NORMAL}"
-    echo "$GITOUT"
-  elif [[ -z $option_s ]] ; then  ## Show the no activity message only if the `s` flag is not there
-    echo "${BOLD}${UNDERLINE}${YELLOW}$CUR_DIR${NORMAL}"
-    if [[ ${AUTHOR} = '.*' ]] ; then
-      echo "${YELLOW}Seems like no one did anything!${NORMAL}"
-    else
-      echo "${YELLOW}Seems like $AUTHOR did nothing!${NORMAL}"
-    fi
-  fi
+  runStandup
 
   cd ${BASE_DIR}
 done
