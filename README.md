@@ -4,38 +4,15 @@
 
 ## Install
 
-You can install it either using CURL
+You can install `git-standup` using one of the options listed below
 
-```shell
-curl -L https://raw.githubusercontent.com/kamranahmedse/git-standup/master/installer.sh | sudo sh
-```
-
-Or install using `npm`
-
-```
-npm install -g git-standup
-```
-
-Or by cloning and manually installing it
-
-```shell
-git clone https://github.com/kamranahmedse/git-standup.git
-cd git-standup
-sudo make install
-```
-
-Mac users can install it using `brew`
-
-```
-brew update
-brew install git-standup
-```
-
-Arch users can find a [package](https://aur.archlinux.org/packages/git-standup-git/) in the [AUR](https://aur.archlinux.org/)
-
-```
-pacaur -S git-standup-git
-```
+| Source | Command |
+| --- | --- |
+| curl | `curl -L https://raw.githubusercontent.com/kamranahmedse/git-standup/master/installer.sh | sudo sh` |
+| npm | `npm install -g git-standup` |
+| brew | `brew update && brew install git-standup` |
+| aur | `pacaur -S git-standup-git` |
+| manual | Clone and run `make install` |  
 
 ### Usage
 
@@ -54,19 +31,23 @@ git standup [-a <author name>]
 ```
 ### Options
 
+Running `git standup` by default gives you the standup report for the last working day considering the week days are from Monday to Friday. And if you run it in a git repository it will give you the standup report for that otherwise, it will look one step down and give you the report for all the repositories found in the current directory. 
+
+You can modify how `git standup` behaves using the options below
+
 | Option | Description |
 | --- | --- |
-| `a` | Specify author to restrict search to e.g. `-a "Kamran Ahmed"` or `-a "all"` |
-| `w` | Specify week start and end days e.g. in UAE weekdays are from Sunday to Thursday so you can do `-w SUN-THU`|
-| `m` | Specify the depth of recursive directory search e.g. `-m 3` defaults to two |
-| `d` | Specify the number of days back to include e.g. `-d 30` to get for a month |
-| `u` | Specify the number of days back till which standup should run e.g. `-u 3` |
-| `L` | Toggle inclusion of symbolic links in recursive directory search |
-| `D` | Specify the date format for "git log" (default: relative) [possible values](https://git-scm.com/docs/git-log#git-log---dateltformatgt) |
-| `h` | Display the help screen |
-| `g` | Show if commit is GPG signed (G) or not (N) |
-| `f` | Fetch the latest commits beforehand |
-| `s` | Silences the no activity message (useful when running in a directory having many repositories) |
+| a | Specify author to restrict search to e.g. `-a "Kamran Ahmed"` or `-a "all"` |
+| w | Specify week start and end days e.g. in UAE weekdays are from Sunday to Thursday so you can do `-w SUN-THU`|
+| m | Specify the depth of recursive directory search e.g. `-m 3` defaults to two |
+| d | Specify the number of days back to include e.g. `-d 30` to get for a month |
+| u | Specify the number of days back till which standup should run e.g. `-u 3` |
+| L | Toggle inclusion of symbolic links in recursive directory search |
+| D | Specify the date format for "git log" (default: relative) [possible values](https://git-scm.com/docs/git-log#git-log---dateltformatgt) |
+| h | Display the help screen |
+| g | Show if commit is GPG signed (G) or not (N) |
+| f | Fetch the latest commits beforehand |
+| s | Silences the no activity message (useful when running in a directory having many repositories) |
 
 Examples:
   git standup -a "John Doe" -w "MON-FRI" -m 3
