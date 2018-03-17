@@ -6,64 +6,67 @@
 
 You can install it either using CURL
 
-```bash
-$ curl -L https://raw.githubusercontent.com/kamranahmedse/git-standup/master/installer.sh | sudo sh
+```shell
+curl -L https://raw.githubusercontent.com/kamranahmedse/git-standup/master/installer.sh | sudo sh
 ```
 
 Or install using `npm`
 
 ```
-$ npm install -g git-standup
+npm install -g git-standup
 ```
 
 Or by cloning and manually installing it
 
-```bash
-$ git clone https://github.com/kamranahmedse/git-standup.git
-$ cd git-standup
-$ sudo make install
+```shell
+git clone https://github.com/kamranahmedse/git-standup.git
+cd git-standup
+sudo make install
 ```
 
 Mac users can install it using `brew`
 
 ```
-$ brew update
-$ brew install git-standup
+brew update
+brew install git-standup
 ```
 
 Arch users can find a [package](https://aur.archlinux.org/packages/git-standup-git/) in the [AUR](https://aur.archlinux.org/)
 
 ```
-$ pacaur -S git-standup-git
+pacaur -S git-standup-git
 ```
 
-## Usage
+### Usage
 
-```bash
-Usage:
-  git standup [-a <author name>] 
-              [-w <weekstart-weekend>]
-              [-m <max-dir-depth>]
-              [-d <since-days-ago>] 
-              [-u <until-days-ago>]
-              [-D <date-format>]
-              [-L]
-              [-g] 
-              [-h] 
-              [-f]
-              [-s]
+```shell
+git standup [-a <author name>] 
+            [-w <weekstart-weekend>]
+            [-m <max-dir-depth>]
+            [-d <since-days-ago>] 
+            [-u <until-days-ago>]
+            [-D <date-format>]
+            [-L]
+            [-g] 
+            [-h] 
+            [-f]
+            [-s]
+```
+### Options
 
-  -a      - Specify author to restrict search to
-  -w      - Specify weekday range to limit search to
-  -m      - Specify the depth of recursive directory search
-  -L      - Toggle inclusion of symbolic links in recursive directory search
-  -d      - Specify the number of days back to include
-  -u      - Specify the number of days back until this day
-  -D      - Specify the date format for "git log" (default: relative)
-  -h      - Display the help screen
-  -g      - Show if commit is GPG signed (G) or not (N)
-  -f      - Fetch the latest commits beforehand
-  -s      - Silences the no activity message (useful when running in a directory having many repositories)
+| Option | Value | Description |
+| --- | --- | --- |
+| `a` | e.g. `-a "Kamran Ahmed"` or `-a "all"` | Specify author to restrict search to |
+| `w` | e.g. `-w SUN-THU` | Specify week start and end days |
+| `m` | e.g. `-m 3` | Specify the depth of recursive directory search |
+| `d` | e.g. `-d 30` | Specify the number of days back to include |
+| `u` | e.g. `-u 3` | Specify the number of days back till which standup should run |
+| `L` | | Toggle inclusion of symbolic links in recursive directory search |
+| `D` | [possible values](https://git-scm.com/docs/git-log#git-log---dateltformatgt) | Specify the date format for "git log" (default: relative) |
+| `h` | | Display the help screen |
+| `g` | | Show if commit is GPG signed (G) or not (N) |
+| `f` | | Fetch the latest commits beforehand |
+| `s` | | Silences the no activity message (useful when running in a directory having many repositories) |
 
 Examples:
   git standup -a "John Doe" -w "MON-FRI" -m 3
@@ -75,7 +78,7 @@ For the basic usage, all you have to do is run `git standup` in a repository or 
 
 To check all your personal commits from last working day, head to the project repository and run
 
-```bash
+```shell
 $ git standup
 ```
 
@@ -84,7 +87,7 @@ $ git standup
 ## Multiple Repository Usage
 Open a directory having multiple repositories and run
 
-```bash
+```shell
 $ git standup
 ```
 
@@ -97,7 +100,7 @@ This will show you all your commits since the last working day in all the reposi
 By default the script searches only in the current directory or one
 level deep. If you want to increase that, use the `-m` switch.
 
-```bash
+```shell
 $ git standup -m 3
 ```
 
@@ -124,7 +127,7 @@ project-b
 
 If you want to find out someone else's commits do
 
-```bash
+```shell
 # Considering their name on git is "John Doe"
 $ git standup -a "John Doe"
 ```
@@ -134,7 +137,7 @@ $ git standup -a "John Doe"
 
 If you want to find out someone else's commits do
 
-```bash
+```shell
 $ git standup -a "all"
 ```
 
@@ -142,7 +145,7 @@ $ git standup -a "all"
 
 If you would like to show all your/someone else's commits from n days ago, you can do
 
-```bash
+```shell
 # Show all my commits from 4 days ago
 $ git standup -d 4
 
@@ -156,7 +159,7 @@ $ git standup -a "John Doe" -d 5
 
 Add `-g` flag to check the GPG info
 
-```bash
+```shell
 $ git standup -g
 ```
 
@@ -168,7 +171,7 @@ Add `-D` flag to specify the date format. Default is `relative`
 
 Please note that it accepts the same format that you could pass while doing git log. For example
 
-```bash
+```shell
 $ git standup -D relative
 # Or instead of relative, it could be local|default|iso|iso-strict|rfc|short|raw etc
 ```
@@ -179,7 +182,7 @@ By default, it considers that the work week starts on Monday and ends on Friday.
 
 If you want to change this, like I want because here in Dubai working days are normally Sunday to Thursday, you will have to do the following
 
-```bash
+```shell
 $ git standup -w "SUN-THU"
 ```
 
@@ -189,7 +192,7 @@ If you have many repositories that you want to generate a standup for, it may be
 
 If you would like to automatically run `git fetch --all` before printing the standup, you can add the `-f` flag, as show below
 
-```bash
+```shell
 $ git standup -f
 ```
 
@@ -197,7 +200,7 @@ $ git standup -f
 
 Of course you can mix the options together but please note that if you provide the number of days, it will override the weekdays configuration (`MON-FRI`) and will show you the commits specifically from `n` days ago.
 
-```bash
+```shell
 # Show all the John Doe's commits from 5 days ago
 $ git standup -a "John Doe" -d 5
 ```
