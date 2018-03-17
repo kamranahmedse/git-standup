@@ -16,13 +16,13 @@ You can install `git-standup` using one of the options listed below
 
 ## Usage
 
-Once you have git-standup installed, you can simply run it in your project directory and it will give you the output from the last working day
+Simply run it in your project directory and it will give you the output from the last working day
 
-```
+```shell
 git standup
 ```
 
-Running `git standup` by default gives you the standup report for the last working day considering the week days are from Monday to Friday. If you run it in a folder containing multiple git repositories, it will look go through each of the projects and give you the standup report for all of them
+If you run it in a folder containing multiple git repositories, it will go through each of the projects and give you the standup report for each one of them.
 
 ## Options 
 
