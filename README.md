@@ -54,19 +54,19 @@ git standup [-a <author name>]
 ```
 ### Options
 
-| Option | Value | Description |
-| --- | --- | --- |
-| `a` | e.g. `-a "Kamran Ahmed"` or `-a "all"` | Specify author to restrict search to |
-| `w` | e.g. `-w SUN-THU` | Specify week start and end days |
-| `m` | e.g. `-m 3` | Specify the depth of recursive directory search |
-| `d` | e.g. `-d 30` | Specify the number of days back to include |
-| `u` | e.g. `-u 3` | Specify the number of days back till which standup should run |
-| `L` | | Toggle inclusion of symbolic links in recursive directory search |
-| `D` | [possible values](https://git-scm.com/docs/git-log#git-log---dateltformatgt) | Specify the date format for "git log" (default: relative) |
-| `h` | | Display the help screen |
-| `g` | | Show if commit is GPG signed (G) or not (N) |
-| `f` | | Fetch the latest commits beforehand |
-| `s` | | Silences the no activity message (useful when running in a directory having many repositories) |
+| Option | Description |
+| --- | --- |
+| `a` | Specify author to restrict search to e.g. `-a "Kamran Ahmed"` or `-a "all"` |
+| `w` | Specify week start and end days e.g. in UAE weekdays are from Sunday to Thursday so you can do `-w SUN-THU`|
+| `m` | Specify the depth of recursive directory search e.g. `-m 3` defaults to two |
+| `d` | Specify the number of days back to include e.g. `-d 30` to get for a month |
+| `u` | Specify the number of days back till which standup should run e.g. `-u 3` |
+| `L` | Toggle inclusion of symbolic links in recursive directory search |
+| `D` | Specify the date format for "git log" (default: relative) [possible values](https://git-scm.com/docs/git-log#git-log---dateltformatgt) |
+| `h` | Display the help screen |
+| `g` | Show if commit is GPG signed (G) or not (N) |
+| `f` | Fetch the latest commits beforehand |
+| `s` | Silences the no activity message (useful when running in a directory having many repositories) |
 
 Examples:
   git standup -a "John Doe" -w "MON-FRI" -m 3
