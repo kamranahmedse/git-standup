@@ -8,13 +8,25 @@ You can install `git-standup` using one of the options listed below
 
 | Source | Command |
 | --- | --- |
-| curl | `curl -L https://raw.githubusercontent.com/kamranahmedse/git-standup/master/installer.sh | sudo sh` |
-| brew | `brew update && brew install git-standup` |
+| curl | `curl -L https://raw.githubusercontent.com/kamranahmedse/git-standup/master/installer.sh \| sudo sh` |
 | npm | `npm install -g git-standup` |
+| brew | `brew update && brew install git-standup` |
 | aur | `pacaur -S git-standup-git` |
 | manual | Clone and run `make install` |  
 
 ## Usage
+
+Once you have git-standup installed, you can simply run it in your project directory and it will give you the output from the last working day
+
+```
+git standup
+```
+
+Running `git standup` by default gives you the standup report for the last working day considering the week days are from Monday to Friday. If you run it in a folder containing multiple git repositories, it will look go through each of the projects and give you the standup report for all of them
+
+## Options 
+
+You can pass several options to modify how git-standup behaves
 
 ```shell
 git standup [-a <author name>] 
@@ -29,11 +41,8 @@ git standup [-a <author name>]
             [-f]
             [-s]
 ```
-## Options
 
-Running `git standup` by default gives you the standup report for the last working day considering the week days are from Monday to Friday. And if you run it in a git repository it will give you the standup report for that otherwise, it will look one step down and give you the report for all the repositories found in the current directory. 
-
-You can modify how `git standup` behaves using the options below
+Here is the detail for each of the options 
 
 | Option | Description |
 | --- | --- |
