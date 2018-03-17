@@ -17,6 +17,7 @@ Usage:
   -g      - Show if commit is GPG signed (G) or not (N)
   -f      - Fetch the latest commits beforehand
   -s      - Silences the no activity message (useful when running in a directory having many repositories)
+  -r      - Generate a file with the report
 
 Examples:
   git standup -a "John Doe" -w "MON-FRI" -m 3
@@ -49,12 +50,18 @@ function uncolored() {
   BOLD=""
   UNDERLINE=""
   NORMAL=""
-  GIT_PRETTY_FORMAT='%h - %s (%cd) <%an>\n'
+  GIT_PRETTY_FORMAT='%h - %s (%cd) <%an>'
   COLOR=never
 
   if [[ $option_g ]] ; then
-    GIT_PRETTY_FORMAT="$GIT_PRETTY_FORMAT gpg: %G?"
+    GIT_PRETTY_FORMAT="$GIT_PRETTY_FORMAT gpg: %G?\n"
+  else
+    GIT_PRETTY_FORMAT="$GIT_PRETTY_FORMAT \n"
   fi
+}
+
+function writeFile() {
+  echo -e $1 >> "${REPORT_FILE_PATH}"
 }
 
 function runStandup() {
@@ -70,23 +77,34 @@ function runStandup() {
     GITOUT=""
   }
 
-  ## Only output if there is some activity
-  if [[ ! -z "$GITOUT" ]] ;  then
-    echo "${BOLD}${UNDERLINE}${YELLOW}$CUR_DIR${NORMAL}"
-    echo "$GITOUT"
-  elif [[ -z $option_s ]] ; then  ## Show the no activity message only if the `s` flag is not there
-    echo "${BOLD}${UNDERLINE}${YELLOW}$CUR_DIR${NORMAL}"
-    if [[ ${AUTHOR} = '.*' ]] ; then
-      echo "${YELLOW}Seems like no one did anything!${NORMAL}"
-    else
-      echo "${YELLOW}Seems like $AUTHOR did nothing!${NORMAL}"
+  # If `r` option was given then no output, just write the report
+  if [[ ! -z $option_r ]] ; then
+    echo "Generating report for: ${CUR_DIR}"
+
+    if [[ ! -z "$GITOUT" ]] ; then
+      writeFile "${CUR_DIR}\n $GITOUT"
+    elif [[ -z $option_s ]] ; then
+      writeFile "${CUR_DIR}\n No activity found!\n"
+    fi
+  else
+    ## Only output if there is some activity
+    if [[ ! -z "$GITOUT" ]] ;  then
+      echo "${BOLD}${UNDERLINE}${YELLOW}$CUR_DIR${NORMAL}"
+      echo "$GITOUT"
+    elif [[ -z $option_s ]] ; then  ## Show the no activity message only if the `s` flag is not there
+      echo "${BOLD}${UNDERLINE}${YELLOW}$CUR_DIR${NORMAL}"
+      if [[ ${AUTHOR} = '.*' ]] ; then
+        echo "${YELLOW}Seems like no one did anything!${NORMAL}"
+      else
+        echo "${YELLOW}Seems like $AUTHOR did nothing!${NORMAL}"
+      fi
     fi
   fi
 }
 
 while getopts "hgfsd:u:a:w:m:D:Lr" opt; do
   case $opt in
-    h|d|u|a|w|m|g|D|f|s|L)
+    h|d|u|a|w|m|g|D|f|s|L|r)
       declare "option_$opt=${OPTARG:-0}"
       ;;
     \?)
@@ -113,7 +131,7 @@ fi
 # Use colors, but only if connected to a terminal, and that terminal supports them.
 if [[ -t 1 ]] && [[ -n "$TERM" ]] && which tput &>/dev/null && tput colors &>/dev/null; then
   ncolors=$(tput colors)
-  if [[ -n "$ncolors" ]] && [[ "$ncolors" -ge 8 ]] ; then
+  if [[ -n "$ncolors" ]] && [[ "$ncolors" -ge 8 ]] && [[ -z "$option_r" ]] ; then
     colored
   else
     uncolored
@@ -123,11 +141,17 @@ else
 fi
 
 ## Set the necessary variables for standup
-REPORT_FILENAME="git-standup-report.txt"
 AUTHOR=`git config user.name`
 SINCE="yesterday"
 MAXDEPTH=2
 INCLUDE_LINKS=
+RAN_FROM_DIR=`pwd`
+REPORT_FILE_PATH="${RAN_FROM_DIR}/git-standup-report.txt"
+
+# If report is to be generated, remove the existing report file if any
+if [[ ! -z $option_r ]] ; then
+   rm -rf ${REPORT_FILE_PATH}
+fi
 
 if [[ $option_a ]] ; then
   # In case the parameter
