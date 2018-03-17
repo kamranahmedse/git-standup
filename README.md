@@ -9,12 +9,12 @@ You can install `git-standup` using one of the options listed below
 | Source | Command |
 | --- | --- |
 | curl | `curl -L https://raw.githubusercontent.com/kamranahmedse/git-standup/master/installer.sh | sudo sh` |
-| npm | `npm install -g git-standup` |
 | brew | `brew update && brew install git-standup` |
+| npm | `npm install -g git-standup` |
 | aur | `pacaur -S git-standup-git` |
 | manual | Clone and run `make install` |  
 
-### Usage
+## Usage
 
 ```shell
 git standup [-a <author name>] 
@@ -29,7 +29,7 @@ git standup [-a <author name>]
             [-f]
             [-s]
 ```
-### Options
+## Options
 
 Running `git standup` by default gives you the standup report for the last working day considering the week days are from Monday to Friday. And if you run it in a git repository it will give you the standup report for that otherwise, it will look one step down and give you the report for all the repositories found in the current directory. 
 
@@ -48,10 +48,6 @@ You can modify how `git standup` behaves using the options below
 | g | Show if commit is GPG signed (G) or not (N) |
 | f | Fetch the latest commits beforehand |
 | s | Silences the no activity message (useful when running in a directory having many repositories) |
-
-Examples:
-  git standup -a "John Doe" -w "MON-FRI" -m 3
-```
 
 For the basic usage, all you have to do is run `git standup` in a repository or a folder containing multiple repositories
 
