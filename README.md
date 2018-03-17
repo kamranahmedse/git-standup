@@ -8,7 +8,7 @@ You can install `git-standup` using one of the options listed below
 
 | Source | Command |
 | --- | --- |
-| curl | `curl -L https://raw.githubusercontent.com/kamranahmedse/git-standup/master/installer.sh | sudo sh` |
+| curl | `curl -L https://raw.githubusercontent.com/kamranahmedse/git-standup/master/installer.sh \| sudo sh` |
 | npm | `npm install -g git-standup` |
 | brew | `brew update && brew install git-standup` |
 | aur | `pacaur -S git-standup-git` |
