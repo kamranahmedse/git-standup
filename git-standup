@@ -16,7 +16,7 @@ Usage:
   -h      - Display this help screen
   -g      - Show if commit is GPG signed (G) or not (N)
   -f      - Fetch the latest commits beforehand
-  -s      - Silences the no activity by user message (useful when running in a directory having many repositories)
+  -s      - Silences the no activity message (useful when running in a directory having many repositories)
 
 Examples:
   git standup -a "John Doe" -w "MON-FRI" -m 3

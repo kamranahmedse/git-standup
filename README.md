@@ -40,28 +40,34 @@ $ pacaur -S git-standup-git
 ## Usage
 
 ```bash
-$ git standup [-a <author name>] 
-              [-w <weekstart-weekend>] 
+Usage:
+  git standup [-a <author name>] 
+              [-w <weekstart-weekend>]
               [-m <max-dir-depth>]
-              [-f]
+              [-d <since-days-ago>] 
+              [-u <until-days-ago>]
+              [-D <date-format>]
               [-L]
-              [-d <days-ago>]
-              [-D <date-format>] 
               [-g] 
-              [-h]
+              [-h] 
+              [-f]
+              [-s]
+
+  -a      - Specify author to restrict search to
+  -w      - Specify weekday range to limit search to
+  -m      - Specify the depth of recursive directory search
+  -L      - Toggle inclusion of symbolic links in recursive directory search
+  -d      - Specify the number of days back to include
+  -u      - Specify the number of days back until this day
+  -D      - Specify the date format for "git log" (default: relative)
+  -h      - Display the help screen
+  -g      - Show if commit is GPG signed (G) or not (N)
+  -f      - Fetch the latest commits beforehand
+  -s      - Silences the no activity message (useful when running in a directory having many repositories)
+
+Examples:
+  git standup -a "John Doe" -w "MON-FRI" -m 3
 ```
-
-Below is the description for each of the flags
-
-- `-a`      - Specify author to restrict search to (name or email)
-- `-w`      - Specify weekday range to limit search to (e.g. `git standup -w SUN-THU`)
-- `-m`      - Specify the depth of recursive directory search
-- `-L`      - Toggle inclusion of symbolic links in recursive directory search
-- `-d`      - Specify the number of days back to include
-- `-D`      - Specify the date format for "git log" (default: relative)
-- `-h`      - Display the help screen
-- `-g`      - Show if commit is GPG signed or not
-- `-f`      - Fetch the latest commits beforehand
 
 For the basic usage, all you have to do is run `git standup` in a repository or a folder containing multiple repositories
 
@@ -99,12 +105,12 @@ $ git standup -m 3
 
 If you want to restrict the standup to some paths, you can whitelist them by adding them to a `.git-standup-whitelist` file. For example if you have the below directory structure
 
-    ├── Workspace				# All your projects are here
-    │   ├── project-a           # Some git repository called project-a
-    │   ├── project-b           # Some git repository called project-b
-    │   ├── sketch-files        # Some sketch files
-    │   ├── mockups		          # Some balsamiq mockups
-    │   └── ...                 # etc.
+    ├── Workspace              # All your projects are here
+    │   ├── project-a          # Some git repository called project-a
+    │   ├── project-b          # Some git repository called project-b
+    │   ├── sketch-files       # Some sketch files
+    │   ├── mockups            # Some balsamiq mockups
+    │   └── ...                # etc.
     └── ...
 
 And you want the `git-standup` to show logs for only `project-a` and `project-b`, you can do that by creating a `.git-standup-whitelist` file under the `Workspace` directory with the below contents and it will only consider these directories for the standup
