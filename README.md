@@ -2,6 +2,12 @@
 
 > Recall what you did on the last working day ..or be nosy and find what someone else did.
 
+A little tool I always wanted one for myself. I work on several repositories on daily basis and it is mostly difficult for me to remember where I left off in each one of them. I was used to checking the heat map on my Github profile or running git log one by one in each of the projects to note what I did and it seemed to be a bit cumbersome and thus came the `git-standup`. By default it gives you the most common usage i.e. shows you commits from the last working day in the current directory and the directories below current level plus it comes with several options to modify how it behaves.
+
+The only requirement is having good commit messages :)
+
+![](https://i.imgur.com/yL03GkB.png)
+
 ## Install
 
 You can install `git-standup` using one of the options listed below
@@ -192,11 +198,6 @@ Of course you can mix the options together but please note that if you provide t
 # Show all the John Doe's commits from 5 days ago
 $ git standup -a "John Doe" -d 5
 ```
-
-## Motivation
-
-We have daily standup meetings at our workplace and I was used to checking the heat map on my Github profile or running git log (one by one in each of the projects) to note what I did and it seemed to be a bit cumbersome. To automate it, I searched and came across some of [the](http://code.joejag.com/2013/everyday-git-aliases.html) [aliases](https://coderwall.com/p/f4shwg/git-for-daily-standup) [and](https://gist.github.com/pathikrit/fb75ba009960c4ed9ddf) [snippets](https://github.com/stephenmathieson/git-standup) that people had been using but none of them directly served my purpose and so I spent a little time over the weekend to write this utility.
-
 
 ## License
 
