@@ -1,10 +1,12 @@
 # git-standup
 
-> Recall what you did on the last working day ..or be nosy and find what someone else did.
+> Recall what you did on the last working day... or be nosy and find what someone else did.
 
-A little tool I always wanted one for myself. I work on several repositories on daily basis and it is mostly difficult for me to remember where I left off in each one of them. I was used to checking the heat map on my Github profile or running git log one by one in each of the projects to note what I did and it seemed to be a bit cumbersome and thus came the `git-standup`. By default it gives you the most common usage i.e. shows you commits from the last working day in the current directory and the directories below current level plus it comes with several options to modify how it behaves.
+This is a little tool that I have always wanted for myself. I work on several repositories on a daily basis and it is very difficult to remember where I left off in each one of them. I used to check the heat map on my Github profile or run *git log* on each project to remember what I did and it seemed to be a bit cumbersome that's when I came up with the idea of making `git-standup`.
 
-The only requirement is having good commit messages :)
+By default, it shows commits of the current directory and the directories below it since the last working day, and it also comes with several options to modify how it behaves.
+
+The only requirement is to have good commit messages :)
 
 ![](https://i.imgur.com/yL03GkB.png)
 
@@ -28,11 +30,11 @@ Simply run it in your project directory and it will give you the output from the
 git standup
 ```
 
-If you run it in a folder containing multiple git repositories, it will go through each of the projects and give you the standup report for each one of them.
+If you run it in a folder containing multiple git repositories, it will go through all of your projects and then it will give you the standup report for each one of them.
 
 ## Options 
 
-You can pass several options to modify how git-standup behaves
+You can pass several options to modify how `git-standup` behaves
 
 ```shell
 git standup [-a <author name>] 
@@ -54,7 +56,7 @@ Here is the detail for each of the options
 | Option | Description |
 | --- | --- |
 | a | Specify author to restrict search to e.g. `-a "Kamran Ahmed"` or `-a "all"` |
-| w | Specify week start and end days e.g. in UAE weekdays are from Sunday to Thursday so you can do `-w SUN-THU`|
+| w | Specify the first and the last days of the workweek e.g. in UAE workweeks are from Sunday to Thursday, so you can do `-w SUN-THU`|
 | m | Specify the depth of recursive directory search e.g. `-m 3` defaults to two |
 | d | Specify the number of days back to include e.g. `-d 30` to get for a month |
 | u | Specify the number of days back till which standup should run e.g. `-u 3` |
@@ -63,14 +65,14 @@ Here is the detail for each of the options
 | h | Display the help screen |
 | g | Show if commit is GPG signed (G) or not (N) |
 | f | Fetch the latest commits beforehand |
-| s | Silences the no activity message (useful when running in a directory having many repositories) |
+| s | Silences the no activity message (useful when running inside a directory that has multiple repositories) |
 | r | Generates the standup report file `git-standup-report.txt` in the current directory |
 
-For the basic usage, all you have to do is run `git standup` in a repository or a folder containing multiple repositories
+For the basic usage, all you have to do is to run `git standup` in a repository or a folder containing multiple repositories
 
 ## Single Repository Usage
 
-To check all your personal commits from last working day, head to the project repository and run
+To check all your personal commits from the last working day, head to the project repository and run
 
 ```shell
 $ git standup
@@ -100,17 +102,17 @@ $ git standup -m 3
 
 ### Directory whitelisting
 
-If you want to restrict the standup to some paths, you can whitelist them by adding them to a `.git-standup-whitelist` file. For example if you have the below directory structure
+If you want to restrict the standup to some paths, you can whitelist them by adding them to a `.git-standup-whitelist` file. For example, if you have the directory structure below:
 
     ├── Workspace              # All your projects are here
-    │   ├── project-a          # Some git repository called project-a
-    │   ├── project-b          # Some git repository called project-b
+    │   ├── project-a          # A git repository called project-a
+    │   ├── project-b          # A git repository called project-b
     │   ├── sketch-files       # Some sketch files
     │   ├── mockups            # Some balsamiq mockups
     │   └── ...                # etc.
     └── ...
 
-And you want the `git-standup` to show logs for only `project-a` and `project-b`, you can do that by creating a `.git-standup-whitelist` file under the `Workspace` directory with the below contents and it will only consider these directories for the standup
+And you want the `git-standup` to show logs for only `project-a` and `project-b`, you can do that by creating a `.git-standup-whitelist` file under the `Workspace` directory with the contents below and it will only consider those directories for the standup
 
 ```
 project-a
@@ -119,7 +121,7 @@ project-b
 
 ## Checking someone else's commits
 
-If you want to find out someone else's commits do
+If you want to find out someone else's commits, do
 
 ```shell
 # Considering their name on git is "John Doe"
@@ -129,7 +131,7 @@ $ git standup -a "John Doe"
 
 ## Check what every contributor did
 
-If you want to find out someone else's commits do
+If you want to find out someone else's commits, do
 
 ```shell
 $ git standup -a "all"
@@ -163,7 +165,7 @@ $ git standup -g
 
 Add `-D` flag to specify the date format. Default is `relative`
 
-Please note that it accepts the same format that you could pass while doing git log. For example
+Please note that it accepts the same format that you could pass while doing *git log*. For example
 
 ```shell
 $ git standup -D relative
@@ -172,9 +174,9 @@ $ git standup -D relative
 
 ## Changing the Weekdays
 
-By default, it considers that the work week starts on Monday and ends on Friday. So if you are running this on any day between Tuesday and Friday, it will show you your commits from the last day. However, if you are running this on Monday, it will show you all your commits since Friday.
+By default, it considers that the workweek starts on Monday and ends on Friday. So if you are running this on any day between Tuesday and Friday, it will show your commits from the last day. However, if you are running this on a Monday, it will show all your commits since Friday.
 
-If you want to change this, like I want because here in Dubai working days are normally Sunday to Thursday, you will have to do the following
+If you want to change this like I did (because here in Dubai working days are normally Sunday to Thursday), you will have to do the following
 
 ```shell
 $ git standup -w "SUN-THU"
@@ -192,7 +194,7 @@ $ git standup -f
 
 ## Mixing options
 
-Of course you can mix the options together but please note that if you provide the number of days, it will override the weekdays configuration (`MON-FRI`) and will show you the commits specifically from `n` days ago.
+Of course you can mix the options together but, please keep in mind that if you provide the number of days, it will override the weekdays configuration (`MON-FRI`) and it will show you the commits specifically from `n` days ago.
 
 ```shell
 # Show all the John Doe's commits from 5 days ago
