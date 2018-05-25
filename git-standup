@@ -142,7 +142,7 @@ fi
 
 ## Set the necessary variables for standup
 AUTHOR=`git config user.name`
-SINCE="yesterday"
+SINCE=${SINCE_DATE:yesterday}
 MAXDEPTH=2
 INCLUDE_LINKS=
 RAN_FROM_DIR=`pwd`
