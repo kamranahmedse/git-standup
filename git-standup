@@ -73,7 +73,6 @@ function runStandup() {
   fi
 
   {
-    echo ${GIT_LOG_COMMAND}
     GITOUT=$(eval ${GIT_LOG_COMMAND} 2>/dev/null )
   } || {
     GITOUT=""
