@@ -18,6 +18,8 @@ Usage:
   -f      - Fetch the latest commits beforehand
   -s      - Silences the no activity message (useful when running in a directory having many repositories)
   -r      - Generate a file with the report
+  -A      - List commits after this date
+  -B      - List commits before this date
 
 Examples:
   git standup -a "John Doe" -w "MON-FRI" -m 3
@@ -102,9 +104,9 @@ function runStandup() {
   fi
 }
 
-while getopts "hgfsd:u:a:w:m:D:Lr" opt; do
+while getopts "hgfsd:u:a:w:m:D:A:B:Lr" opt; do
   case $opt in
-    h|d|u|a|w|m|g|D|f|s|L|r)
+    h|d|u|a|w|m|g|D|f|s|L|r|A|B)
       declare "option_$opt=${OPTARG:-0}"
       ;;
     \?)
@@ -192,6 +194,12 @@ fi
 ## If -u flag is there, use its value for the until
 if [[ $option_u ]] && [[ $option_u -ne 0 ]] ; then
   UNTIL_OPT="--until=\"$option_u days ago\""
+elif [[ $option_B ]]; then
+  UNTIL_OPT="--until=\"$option_B\""
+fi
+
+if [[ $option_A ]]; then
+  AFTER_OPT="--after=\"$option_A\""
 fi
 
 GIT_DATE_FORMAT=${option_D:-relative}
@@ -201,6 +209,7 @@ GIT_LOG_COMMAND="git --no-pager log \
     --no-merges
     --since=\"$SINCE\"
     ${UNTIL_OPT}
+    ${AFTER_OPT}
     --author=\"$AUTHOR\"
     --abbrev-commit
     --oneline
