@@ -4,7 +4,7 @@
 function usage() {
   cat <<EOS
 Usage:
-  git standup [-a <author name>] [-w <weekstart-weekend>] [-d <since-days-ago>] [-u <until-days-ago>] [-m <max-dir-depth>] [-g] [-h] [-f]
+  git standup [-a <author name>] [-w <weekstart-weekend>] [-d <since-days-ago>] [-u <until-days-ago>] [-m <max-dir-depth>] [-g] [-h] [-f] [-c]
 
   -a      - Specify author to restrict search to
   -w      - Specify weekday range to limit search to
@@ -18,6 +18,7 @@ Usage:
   -f      - Fetch the latest commits beforehand
   -s      - Silences the no activity message (useful when running in a directory having many repositories)
   -r      - Generate a file with the report
+  -c      - Show diffstat for every matched commit
   -A      - List commits after this date
   -B      - List commits before this date
 
@@ -104,9 +105,9 @@ function runStandup() {
   fi
 }
 
-while getopts "hgfsd:u:a:w:m:D:A:B:Lr" opt; do
+while getopts "hgfsd:u:a:w:m:D:A:B:Lrc" opt; do
   case $opt in
-    h|d|u|a|w|m|g|D|f|s|L|r|A|B)
+    h|d|u|a|w|m|g|D|f|s|L|r|A|B|c)
       declare "option_$opt=${OPTARG:-0}"
       ;;
     \?)
@@ -149,6 +150,7 @@ MAXDEPTH=2
 INCLUDE_LINKS=
 RAN_FROM_DIR=`pwd`
 REPORT_FILE_PATH="${RAN_FROM_DIR}/git-standup-report.txt"
+STAT=
 
 # If report is to be generated, remove the existing report file if any
 if [[ ! -z $option_r ]] ; then
@@ -170,6 +172,10 @@ fi
 
 if [[ $option_L ]] ; then
   INCLUDE_LINKS="-L"
+fi
+
+if [[ $option_c ]] ; then
+  STAT="--stat"
 fi
 
 ## If -d flag is there, use its value for the since
@@ -215,12 +221,13 @@ GIT_LOG_COMMAND="git --no-pager log \
     --oneline
     --pretty=format:'$GIT_PRETTY_FORMAT'
     --date='$GIT_DATE_FORMAT'
-    --color=$COLOR"
+    --color=$COLOR
+    ${STAT}"
 
-## For when the command has been run in a non-repo directory
+# For when the command has been run in a non-repo directory
 if [[ ! -d ".git" || -f ".git" ]]; then
   BASE_DIR=`pwd`
-  ## Set delimiter to newline for the loop
+  # Set delimiter to newline for the loop
   IFS=$'\n'
 
   if [[ -f ".git-standup-whitelist" ]]; then
@@ -229,14 +236,14 @@ if [[ ! -d ".git" || -f ".git" ]]; then
       SEARCH_PATH=.
   fi
 
-  ## Recursively search for git repositories
+  # Recursively search for git repositories
   PROJECT_DIRS=`find ${INCLUDE_LINKS} ${SEARCH_PATH} -maxdepth ${MAXDEPTH} -mindepth 0 -name .git`
 elif [[ -f ".git" || -d ".git" ]]; then
   PROJECT_DIRS=("`pwd`/.git")
 fi
 
-## if project directories is still empty
-## we might be sitting inside a git repo
+# if project directories is still empty
+# we might be sitting inside a git repo
 if [[ -z ${PROJECT_DIRS} ]]; then
   ROOT_DIR_COMMAND="git rev-parse --show-toplevel"
   PROJECT_ROOT=$(eval ${ROOT_DIR_COMMAND} 2>/dev/null )
