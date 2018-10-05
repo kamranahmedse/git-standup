@@ -49,6 +49,7 @@ git standup [-a <author name>]
             [-f]
             [-s]
             [-r]
+            [-c]
 ```
 
 Here is the detail for each of the options 
@@ -68,6 +69,7 @@ Here is the detail for each of the options
 | g | Show if commit is GPG signed (G) or not (N) |
 | f | Fetch the latest commits beforehand |
 | s | Silences the no activity message (useful when running in a directory having many repositories) |
+| c | Show diff-stat for every matched commit
 | r | Generates the standup report file `git-standup-report.txt` in the current directory |
 
 For the basic usage, all you have to do is run `git standup` in a repository or a folder containing multiple repositories
@@ -164,6 +166,13 @@ git standup -A "2018-10-01 00:00"
 git standup -B "2018-10-01 00:00"
 # Show the commits between September 20 and September 30
 git standup -A "2018-09-20 00:00:00" -B "2018-09-30 23:59"
+```
+
+## Show Diff-stat
+
+Add `-c` flag to show the diff-stat for each of the commits in standup results
+```shell
+git standup -c
 ```
 
 ## [Identifying Signed Commits](https://git-scm.com/book/en/v2/Git-Tools-Signing-Your-Work)
