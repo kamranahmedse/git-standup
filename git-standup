@@ -18,7 +18,9 @@ Usage:
   -f      - Fetch the latest commits beforehand
   -s      - Silences the no activity message (useful when running in a directory having many repositories)
   -r      - Generate a file with the report
-  -c      - Generate a diffstat/change for every matched commit
+  -c      - Show diffstat for every matched commit
+  -A      - List commits after this date
+  -B      - List commits before this date
 
 Examples:
   git standup -a "John Doe" -w "MON-FRI" -m 3
@@ -103,9 +105,9 @@ function runStandup() {
   fi
 }
 
-while getopts "hgfsd:u:a:w:m:D:Lrc" opt; do
+while getopts "hgfsd:u:a:w:m:D:A:B:Lrc" opt; do
   case $opt in
-    h|d|u|a|w|m|g|D|f|s|L|r|c)
+    h|d|u|a|w|m|g|D|f|s|L|r|A|B|c)
       declare "option_$opt=${OPTARG:-0}"
       ;;
     \?)
@@ -175,6 +177,7 @@ fi
 if [[ $option_c ]] ; then
   STAT="--stat"
 fi
+
 ## If -d flag is there, use its value for the since
 if [[ $option_d ]] && [[ $option_d -ne 0 ]] ; then
   SINCE="$option_d days ago"
@@ -197,6 +200,12 @@ fi
 ## If -u flag is there, use its value for the until
 if [[ $option_u ]] && [[ $option_u -ne 0 ]] ; then
   UNTIL_OPT="--until=\"$option_u days ago\""
+elif [[ $option_B ]]; then
+  UNTIL_OPT="--until=\"$option_B\""
+fi
+
+if [[ $option_A ]]; then
+  AFTER_OPT="--after=\"$option_A\""
 fi
 
 GIT_DATE_FORMAT=${option_D:-relative}
@@ -206,17 +215,19 @@ GIT_LOG_COMMAND="git --no-pager log \
     --no-merges
     --since=\"$SINCE\"
     ${UNTIL_OPT}
+    ${AFTER_OPT}
     --author=\"$AUTHOR\"
     --abbrev-commit
     --oneline
     --pretty=format:'$GIT_PRETTY_FORMAT'
     --date='$GIT_DATE_FORMAT'
-    --color=$COLOR $STAT"
+    --color=$COLOR
+    ${STAT}"
 
-## For when the command has been run in a non-repo directory
+# For when the command has been run in a non-repo directory
 if [[ ! -d ".git" || -f ".git" ]]; then
   BASE_DIR=`pwd`
-  ## Set delimiter to newline for the loop
+  # Set delimiter to newline for the loop
   IFS=$'\n'
 
   if [[ -f ".git-standup-whitelist" ]]; then
@@ -225,14 +236,14 @@ if [[ ! -d ".git" || -f ".git" ]]; then
       SEARCH_PATH=.
   fi
 
-  ## Recursively search for git repositories
+  # Recursively search for git repositories
   PROJECT_DIRS=`find ${INCLUDE_LINKS} ${SEARCH_PATH} -maxdepth ${MAXDEPTH} -mindepth 0 -name .git`
 elif [[ -f ".git" || -d ".git" ]]; then
   PROJECT_DIRS=("`pwd`/.git")
 fi
 
-## if project directories is still empty
-## we might be sitting inside a git repo
+# if project directories is still empty
+# we might be sitting inside a git repo
 if [[ -z ${PROJECT_DIRS} ]]; then
   ROOT_DIR_COMMAND="git rev-parse --show-toplevel"
   PROJECT_ROOT=$(eval ${ROOT_DIR_COMMAND} 2>/dev/null )

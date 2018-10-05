@@ -41,6 +41,8 @@ git standup [-a <author name>]
             [-d <since-days-ago>] 
             [-u <until-days-ago>]
             [-D <date-format>]
+            [-A <after-date>]
+            [-B <before-date>]
             [-L]
             [-g] 
             [-h] 
@@ -60,6 +62,8 @@ Here is the detail for each of the options
 | u | Specify the number of days back till which standup should run e.g. `-u 3` |
 | L | Toggle inclusion of symbolic links in recursive directory search |
 | D | Specify the date format for "git log" (default: relative) [possible values](https://git-scm.com/docs/git-log#git-log---dateltformatgt) |
+| A | Show the commits till after the given date
+| B | Show the commits till before the given date
 | h | Display the help screen |
 | g | Show if commit is GPG signed (G) or not (N) |
 | f | Fetch the latest commits beforehand |
@@ -148,6 +152,19 @@ $ git standup -a "John Doe" -d 5
 ```
 
 ![git standup -d 5](http://i.imgur.com/j7Ma760.gif)
+
+## Date filters
+
+You can apply the filters on the commits shown. Use `-A` and `-B` flags to specify `after` and `before` dates
+
+```shell
+# Show all the commits after October 01, 2018
+git standup -A "2018-10-01 00:00"
+# Show all the commits till before October 01, 2018
+git standup -B "2018-10-01 00:00"
+# Show the commits between September 20 and September 30
+git standup -A "2018-09-20 00:00:00" -B "2018-09-30 23:59"
+```
 
 ## [Identifying Signed Commits](https://git-scm.com/book/en/v2/Git-Tools-Signing-Your-Work)
 
