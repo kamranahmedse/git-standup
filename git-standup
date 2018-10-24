@@ -258,7 +258,8 @@ fi
 
 # Foreach of the project directories, run the standup
 for DIR in ${PROJECT_DIRS}; do
-  cd "`dirname $DIR`"
+  PROJECT_DIR=`dirname "$DIR"`
+  cd "$PROJECT_DIR"
   CUR_DIR=`pwd`
   BASENAME=`basename "$CUR_DIR"`
 
