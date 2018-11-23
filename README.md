@@ -50,6 +50,7 @@ git standup [-a <author name>]
             [-s]
             [-r]
             [-c]
+            [-R]
 ```
 
 Here is the detail for each of the options 
@@ -71,6 +72,7 @@ Here is the detail for each of the options
 | s | Silences the no activity message (useful when running in a directory having many repositories) |
 | c | Show diff-stat for every matched commit
 | r | Generates the standup report file `git-standup-report.txt` in the current directory |
+| R | Display the author date instead of the committer date |
 
 For the basic usage, all you have to do is run `git standup` in a repository or a folder containing multiple repositories
 

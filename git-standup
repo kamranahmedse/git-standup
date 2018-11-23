@@ -21,6 +21,7 @@ Usage:
   -c      - Show diffstat for every matched commit
   -A      - List commits after this date
   -B      - List commits before this date
+  -R      - Display the author date instead of the committer date
 
 Examples:
   git standup -a "John Doe" -w "MON-FRI" -m 3
@@ -36,7 +37,14 @@ function colored() {
   BOLD=$(tput bold)
   UNDERLINE=$(tput smul)
   NORMAL=$(tput sgr0)
-  GIT_PRETTY_FORMAT='%Cred%h%Creset - %s %Cgreen(%cd) %C(bold blue)<%an>%Creset'
+
+  GIT_PRETTY_DATE="%cd"
+  if [[ $option_R ]] ; then
+    GIT_PRETTY_DATE="%ad"
+  fi
+
+  GIT_PRETTY_FORMAT="%Cred%h%Creset - %s %Cgreen($GIT_PRETTY_DATE) %C(bold blue)<%an>%Creset"
+echo $GIT_PRETTY_FORMAT
   COLOR=always
 
   if [[ $option_g ]] ; then
@@ -53,7 +61,13 @@ function uncolored() {
   BOLD=""
   UNDERLINE=""
   NORMAL=""
-  GIT_PRETTY_FORMAT='%h - %s (%cd) <%an>'
+
+  GIT_PRETTY_DATE="%cd"
+  if [[ $option_R ]] ; then
+    GIT_PRETTY_DATE="%ad"
+  fi
+
+  GIT_PRETTY_FORMAT="%h - %s ($GIT_PRETTY_DATE) <%an>"
   COLOR=never
 
   if [[ $option_g ]] ; then
@@ -105,9 +119,9 @@ function runStandup() {
   fi
 }
 
-while getopts "hgfsd:u:a:w:m:D:A:B:Lrc" opt; do
+while getopts "hgfsd:u:a:w:m:D:A:B:LrcR" opt; do
   case $opt in
-    h|d|u|a|w|m|g|D|f|s|L|r|A|B|c)
+    h|d|u|a|w|m|g|D|f|s|L|r|A|B|c|R)
       declare "option_$opt=${OPTARG:-0}"
       ;;
     \?)
