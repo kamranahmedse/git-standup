@@ -44,7 +44,6 @@ function colored() {
   fi
 
   GIT_PRETTY_FORMAT="%Cred%h%Creset - %s %Cgreen($GIT_PRETTY_DATE) %C(bold blue)<%an>%Creset"
-echo $GIT_PRETTY_FORMAT
   COLOR=always
 
   if [[ $option_g ]] ; then
