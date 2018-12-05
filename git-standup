@@ -157,7 +157,6 @@ else
 fi
 
 ## Set the necessary variables for standup
-AUTHOR=`git config user.name`
 SINCE="yesterday"
 MAXDEPTH=2
 INCLUDE_LINKS=
@@ -168,15 +167,6 @@ STAT=
 # If report is to be generated, remove the existing report file if any
 if [[ ! -z $option_r ]] ; then
    rm -rf ${REPORT_FILE_PATH}
-fi
-
-if [[ $option_a ]] ; then
-  # In case the parameter
-  if [[ $option_a = 'all' ]] ; then
-    AUTHOR=".*"
-  else
-    AUTHOR="$option_a"
-  fi
 fi
 
 if [[ $option_m ]] ; then
@@ -223,20 +213,6 @@ fi
 
 GIT_DATE_FORMAT=${option_D:-relative}
 
-GIT_LOG_COMMAND="git --no-pager log \
-    --all
-    --no-merges
-    --since=\"$SINCE\"
-    ${UNTIL_OPT}
-    ${AFTER_OPT}
-    --author=\"$AUTHOR\"
-    --abbrev-commit
-    --oneline
-    --pretty=format:'$GIT_PRETTY_FORMAT'
-    --date='$GIT_DATE_FORMAT'
-    --color=$COLOR
-    ${STAT}"
-
 # For when the command has been run in a non-repo directory
 if [[ ! -d ".git" || -f ".git" ]]; then
   BASE_DIR=`pwd`
@@ -281,6 +257,31 @@ for DIR in ${PROJECT_DIRS}; do
     cd ${BASE_DIR}
     continue
   fi
+
+  AUTHOR=`git config user.name`
+
+  if [[ $option_a ]] ; then
+    # In case the parameter
+    if [[ $option_a = 'all' ]] ; then
+      AUTHOR=".*"
+    else
+      AUTHOR="$option_a"
+    fi
+  fi
+
+  GIT_LOG_COMMAND="git --no-pager log \
+    --all
+    --no-merges
+    --since=\"$SINCE\"
+    ${UNTIL_OPT}
+    ${AFTER_OPT}
+    --author=\"$AUTHOR\"
+    --abbrev-commit
+    --oneline
+    --pretty=format:'$GIT_PRETTY_FORMAT'
+    --date='$GIT_DATE_FORMAT'
+    --color=$COLOR
+    ${STAT}"
 
   runStandup
 
