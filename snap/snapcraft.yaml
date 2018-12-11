@@ -1,0 +1,27 @@
+name: git-standup
+base: core18 # the base snap is the execution environment for this snap
+version: git
+summary: Recall what you did on the last working day. 
+description: |
+  git-standup by default it gives you the most common usage 
+  i.e. shows you commits from the last working day in the current 
+  directory and the directories below current level plus it comes 
+  with several options to modify how it behaves.
+  The only requirement is having good commit messages :)
+
+grade: stable
+confinement: strict
+
+parts:
+  git-standup:
+    plugin: nodejs
+    source: .
+    stage-packages:
+      - git
+
+apps:
+  git-standup:
+    command: bin/git-standup
+    plugs:
+      - home
+      - removable-media
