@@ -12,7 +12,7 @@ Usage:
   -L      - Toggle inclusion of symbolic links in recursive directory search
   -d      - Specify the number of days back to include
   -u      - Specify the number of days back until this day
-  -D      - Specify the date format for "git log" (default: relative)
+  -D      - Specify the date format for "git log" (default: relative, other: local|default|iso|rfc|short|raw)
   -h      - Display this help screen
   -g      - Show if commit is GPG signed (G) or not (N)
   -f      - Fetch the latest commits beforehand
