@@ -110,9 +110,9 @@ function runStandup() {
     elif [[ -z $option_s ]] ; then  ## Show the no activity message only if the `s` flag is not there
       echo "${BOLD}${UNDERLINE}${YELLOW}$CUR_DIR${NORMAL}"
       if [[ ${AUTHOR} = '.*' ]] ; then
-        echo "${YELLOW}Seems like no one did anything!${NORMAL}"
+        echo "${YELLOW}No commits found during this period.${NORMAL}"
       else
-        echo "${YELLOW}Seems like $AUTHOR did nothing!${NORMAL}"
+        echo "${YELLOW}No commits from $AUTHOR during this period.${NORMAL}"
       fi
     fi
   fi
