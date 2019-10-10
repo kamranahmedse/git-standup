@@ -248,6 +248,7 @@ if [[ -z ${PROJECT_DIRS} ]]; then
 fi
 
 # Foreach of the project directories, run the standup
+IFS=$'\n'
 for DIR in ${PROJECT_DIRS}; do
   PROJECT_DIR=`dirname "$DIR"`
   cd "$PROJECT_DIR"
@@ -294,3 +295,4 @@ for DIR in ${PROJECT_DIRS}; do
 
   cd ${BASE_DIR}
 done
+unset IFS
