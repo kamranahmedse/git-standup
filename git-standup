@@ -9,6 +9,7 @@ Usage:
   -a      - Specify author to restrict search to
   -w      - Specify weekday range to limit search to
   -m      - Specify the depth of recursive directory search
+  -F      - Force recursion up to speficied depth
   -L      - Toggle inclusion of symbolic links in recursive directory search
   -d      - Specify the number of days back to include
   -u      - Specify the number of days back until this day
@@ -118,9 +119,9 @@ function runStandup() {
   fi
 }
 
-while getopts "hgfsd:u:a:w:m:D:A:B:LrcR" opt; do
+while getopts "hgfsd:u:a:w:m:D:A:B:LrcRF" opt; do
   case $opt in
-    h|d|u|a|w|m|g|D|f|s|L|r|A|B|c|R)
+    h|d|u|a|w|m|g|D|f|s|L|r|A|B|c|R|F)
       declare "option_$opt=${OPTARG:-0}"
       ;;
     \?)
@@ -214,7 +215,7 @@ fi
 GIT_DATE_FORMAT=${option_D:-relative}
 
 # For when the command has been run in a non-repo directory
-if [[ ! -d ".git" || -f ".git" ]]; then
+if [[ $option_F || ! -d ".git" || -f ".git" ]]; then
   BASE_DIR=`pwd`
   # Set delimiter to newline for the loop
   IFS=$'\n'
