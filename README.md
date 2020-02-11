@@ -18,7 +18,7 @@ You can install `git-standup` using one of the options listed below
 | npm | `npm install -g git-standup` |
 | brew | `brew update && brew install git-standup` |
 | aur | `pacaur -S git-standup-git` |
-| manual | Clone and run `make install` |  
+| manual | Clone and run `make install` |
 
 ## Usage
 
@@ -30,22 +30,23 @@ git standup
 
 If you run it in a folder containing multiple git repositories, it will go through each of the projects and give you the standup report for each one of them.
 
-## Options 
+## Options
 
 You can pass several options to modify how git-standup behaves
 
 ```shell
-git standup [-a <author name>] 
+git standup [-a <author name>]
             [-w <weekstart-weekend>]
             [-m <max-dir-depth>]
-            [-d <since-days-ago>] 
+            [-F]
+            [-d <since-days-ago>]
             [-u <until-days-ago>]
             [-D <date-format>]
             [-A <after-date>]
             [-B <before-date>]
             [-L]
-            [-g] 
-            [-h] 
+            [-g]
+            [-h]
             [-f]
             [-s]
             [-r]
@@ -53,13 +54,14 @@ git standup [-a <author name>]
             [-R]
 ```
 
-Here is the detail for each of the options 
+Here is the detail for each of the options
 
 | Option | Description |
 | --- | --- |
 | a | Specify author to restrict search to e.g. `-a "Kamran Ahmed"` or `-a "all"` |
 | w | Specify week start and end days e.g. in UAE weekdays are from Sunday to Thursday so you can do `-w SUN-THU`|
 | m | Specify the depth of recursive directory search e.g. `-m 3` defaults to two |
+| F | Force recursion up to speficied depth even when git repository found earlier |
 | d | Specify the number of days back to include e.g. `-d 30` to get for a month |
 | u | Specify the number of days back till which standup should run e.g. `-u 3` |
 | L | Toggle inclusion of symbolic links in recursive directory search |
@@ -95,12 +97,13 @@ $ git standup
 
 ![git standup](http://i.imgur.com/4xmkA49.gif)
 
-This will show you all your commits since the last working day in all the repositories inside. 
+This will show you all your commits since the last working day in all the repositories inside.
 
 ## Directory depth
 
 By default the script searches only in the current directory or one
 level deep. If you want to increase that, use the `-m` switch.
+If the base directory is a git repository you can use the `-F` switch to force the recursion.
 
 ```shell
 $ git standup -m 3
