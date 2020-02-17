@@ -7,6 +7,7 @@ Usage:
   git standup [-a <author name>] [-w <weekstart-weekend>] [-d <since-days-ago>] [-u <until-days-ago>] [-m <max-dir-depth>] [-g] [-h] [-f] [-c]
 
   -a      - Specify author to restrict search to
+  -b      - Specify branch to restrict search to (unset: all branches, "\$remote/\$branch" to include fetches)
   -w      - Specify weekday range to limit search to
   -m      - Specify the depth of recursive directory search
   -F      - Force recursion up to speficied depth
@@ -119,9 +120,9 @@ function runStandup() {
   fi
 }
 
-while getopts "hgfsd:u:a:w:m:D:A:B:LrcRF" opt; do
+while getopts "hgfsd:u:a:w:m:D:A:B:LrcRFb:" opt; do
   case $opt in
-    h|d|u|a|w|m|g|D|f|s|L|r|A|B|c|R|F)
+    h|d|u|a|w|m|g|D|f|s|L|r|A|B|c|R|F|b)
       declare "option_$opt=${OPTARG:-0}"
       ;;
     \?)
@@ -270,8 +271,13 @@ for DIR in ${PROJECT_DIRS}; do
     fi
   fi
 
+  GIT_BRANCH_FILTER="--all"
+  if [[ $option_b ]] ; then
+    GIT_BRANCH_FILTER="--first-parent $option_b"
+  fi
+
   GIT_LOG_COMMAND="git --no-pager log \
-    --all
+    ${GIT_BRANCH_FILTER}
     --no-merges
     --since=\"$SINCE\"
     ${UNTIL_OPT}
