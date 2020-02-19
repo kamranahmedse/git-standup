@@ -2,8 +2,10 @@
 
 > Recall what you did on the last working day ..or be nosy and find what someone else did.
 
-A little tool that I always wanted for myself. I work on several repositories on daily basis and it is mostly difficult for me to remember where I left off in each one of them. I was used to checking the heat map on my GitHub profile or running git log one by one in each of the projects to note what I did and it seemed to be a bit cumbersome and thus came the `git-standup`. By default it gives you the most common usage i.e. shows you commits from the last working day in the current directory and the directories below current level plus it comes with several options to modify how it behaves.
+A little tool that I always wanted for myself. I work on several repositories on daily basis and it is mostly difficult for me to remember where I left off in each one of them. `git-standup` helps me with running standups and keeping track of what I have been doing. By default it gives you the most common usage i.e. shows you commits from the last working day in the current directory and the directories below current level plus it comes with several options to modify how it behaves.
 
+
+## Requirements
 The only requirement is having good commit messages :)
 
 ![](https://i.imgur.com/yL03GkB.png)
@@ -39,6 +41,7 @@ git standup [-a <author name>]
             [-w <weekstart-weekend>]
             [-m <max-dir-depth>]
             [-F]
+            [-b]
             [-d <since-days-ago>]
             [-u <until-days-ago>]
             [-D <date-format>]
@@ -59,6 +62,7 @@ Here is the detail for each of the options
 | Option | Description |
 | --- | --- |
 | a | Specify author to restrict search to e.g. `-a "Kamran Ahmed"` or `-a "all"` |
+| b | Specify branch to restrict search to (unset: all branches, "\$remote/\$branch" to include fetches) |
 | w | Specify week start and end days e.g. in UAE weekdays are from Sunday to Thursday so you can do `-w SUN-THU`|
 | m | Specify the depth of recursive directory search e.g. `-m 3` defaults to two |
 | F | Force recursion up to speficied depth even when git repository found earlier |
