@@ -113,25 +113,6 @@ If the base directory is a git repository you can use the `-F` switch to force t
 $ git standup -m 3
 ```
 
-### Directory whitelisting
-
-If you want to restrict the standup to some paths, you can whitelist them by adding them to a `.git-standup-whitelist` file. For example if you have the below directory structure
-
-    ├── Workspace              # All your projects are here
-    │   ├── project-a          # Some git repository called project-a
-    │   ├── project-b          # Some git repository called project-b
-    │   ├── sketch-files       # Some sketch files
-    │   ├── mockups            # Some balsamiq mockups
-    │   └── ...                # etc.
-    └── ...
-
-And you want the `git-standup` to show logs for only `project-a` and `project-b`, you can do that by creating a `.git-standup-whitelist` file under the `Workspace` directory with the below contents and it will only consider these directories for the standup
-
-```
-project-a
-project-b
-```
-
 ## Checking someone else's commits
 
 If you want to find out someone else's commits do
@@ -219,6 +200,25 @@ Use of `-b foobar` option, which restricts returned results to commits present o
 ```shell
 # Use develop branch for standup
 git standup -b develop
+```
+
+### Directory whitelisting
+
+If you want to restrict the standup to some paths, you can whitelist them by adding them to a `.git-standup-whitelist` file. For example if you have the below directory structure
+
+    ├── Workspace              # All your projects are here
+    │   ├── project-a          # Some git repository called project-a
+    │   ├── project-b          # Some git repository called project-b
+    │   ├── sketch-files       # Some sketch files
+    │   ├── mockups            # Some balsamiq mockups
+    │   └── ...                # etc.
+    └── ...
+
+And you want the `git-standup` to show logs for only `project-a` and `project-b`, you can do that by creating a `.git-standup-whitelist` file under the `Workspace` directory with the below contents and it will only consider these directories for the standup
+
+```
+project-a
+project-b
 ```
 
 ## Changing the Weekdays
