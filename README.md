@@ -41,7 +41,7 @@ git standup [-a <author name>]
             [-w <weekstart-weekend>]
             [-m <max-dir-depth>]
             [-F]
-            [-b]
+            [-b <branch-to-use>]
             [-d <since-days-ago>]
             [-u <until-days-ago>]
             [-D <date-format>]
@@ -140,6 +140,13 @@ If you want to find out someone else's commits do
 # Considering their name on git is "John Doe"
 $ git standup -a "John Doe"
 ```
+
+Apart fromm restrict to commits from a certain user, you can also use `-a` flag to avoid certain users. You can do that if you enable perl regexp in your git installation `git config --global grep.patternType perl`, and use the author filter like below:
+
+```shell
+git standup -a'^(?!(renovate\[bot\]))'
+```
+
 ![git standup](http://i.imgur.com/sYICxW8.gif)
 
 ## Check what every contributor did
@@ -203,6 +210,15 @@ Please note that it accepts the same format that you could pass while doing git 
 ```shell
 $ git standup -D relative
 # Or instead of relative, it could be local|default|iso|iso-strict|rfc|short|raw etc
+```
+
+## Branch Filter
+
+Use of `-b foobar` option, which restricts returned results to commits present on branch `foobar`. Supports arbitrary branch specs, so for example `-b origin/foobar` would include data present on the remote that has not been merged locally.
+
+```shell
+# Use develop branch for standup
+git standup -b develop
 ```
 
 ## Changing the Weekdays
