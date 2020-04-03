@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# shellcheck disable=SC2128
 
 # Shows the usage
 function usage() {
@@ -41,23 +42,25 @@ function colored() {
   NORMAL=$(tput sgr0)
 
   GIT_PRETTY_DATE="%cd"
-  if [[ $option_R ]]; then
+  if [[ ${option_R:=} ]]; then
     GIT_PRETTY_DATE="%ad"
   fi
 
   GIT_PRETTY_FORMAT="%Cred%h%Creset - %s %Cgreen($GIT_PRETTY_DATE) %C(bold blue)<%an>%Creset"
   COLOR=always
 
-  if [[ $option_g ]]; then
+  if [[ ${option_g:=} ]]; then
     GIT_PRETTY_FORMAT="$GIT_PRETTY_FORMAT %C(yellow)gpg: %G?%Creset"
   fi
 }
 
 # Sets up the uncolored output
 function uncolored() {
+  # shellcheck disable=SC2034
   RED=""
   GREEN=""
   YELLOW=""
+  # shellcheck disable=SC2034
   BLUE=""
   BOLD=""
   UNDERLINE=""
@@ -79,34 +82,35 @@ function uncolored() {
 }
 
 function writeFile() {
-  echo -e $1 >> "${REPORT_FILE_PATH}"
+  echo -e "$1" >> "${REPORT_FILE_PATH}"
 }
 
 function runStandup() {
   # Fetch the latest commits, if required
-  if [[ $option_f ]]; then
+  if [[ ${option_f:=} ]]; then
     echo "${BOLD}${GREEN}Fetching commits in ${YELLOW}${UNDERLINE}${BOLD}${BASENAME}${NORMAL}"
     git fetch --all > /dev/null 2>&1
   fi
 
   {
+    # shellcheck disable=SC2086
     GITOUT=$(eval ${GIT_LOG_COMMAND} 2> /dev/null)
   } || {
     GITOUT=""
   }
 
   # If `r` option was given then no output, just write the report
-  if [[ ! -z $option_r ]]; then
+  if [[ -n ${option_r:=} ]]; then
     echo "Generating report for: ${CUR_DIR}"
 
-    if [[ ! -z "$GITOUT" ]]; then
+    if [[ -n "$GITOUT" ]]; then
       writeFile "${CUR_DIR}\n $GITOUT"
-    elif [[ -z $option_s ]]; then
+    elif [[ -z ${option_s:=} ]]; then
       writeFile "${CUR_DIR}\n No activity found!\n"
     fi
   else
     ## Only output if there is some activity
-    if [[ ! -z "$GITOUT" ]]; then
+    if [[ -n "$GITOUT" ]]; then
       echo "${BOLD}${UNDERLINE}${YELLOW}$CUR_DIR${NORMAL}"
       echo "$GITOUT"
     elif [[ -z $option_s ]]; then ## Show the no activity message only if the `s` flag is not there
@@ -135,19 +139,19 @@ done
 shift $((OPTIND - 1))
 
 if [[ $# -gt 0 ]]; then
-  echo >&2 "Invalid arguments: $@"
+  echo >&2 "Invalid arguments: $*"
   echo >&2 "Use 'git standup -h' to see usage info"
   exit 1
 fi
 
 # Main script
-if [[ $option_h ]]; then
+if [[ ${option_h:=} ]]; then
   usage
   exit 0
 fi
 
 # Use colors, but only if connected to a terminal, and that terminal supports them.
-if [[ -t 1 ]] && [[ -n "$TERM" ]] && which tput &> /dev/null && tput colors &> /dev/null; then
+if [[ -t 1 ]] && [[ -n "$TERM" ]] && command -v tput &> /dev/null && tput colors &> /dev/null; then
   ncolors=$(tput colors)
   if [[ -n "$ncolors" ]] && [[ "$ncolors" -ge 8 ]] && [[ -z "$option_r" ]]; then
     colored
@@ -167,31 +171,31 @@ REPORT_FILE_PATH="${RAN_FROM_DIR}/git-standup-report.txt"
 STAT=
 
 # If report is to be generated, remove the existing report file if any
-if [[ ! -z $option_r ]]; then
-  rm -rf ${REPORT_FILE_PATH}
+if [[ -n $option_r ]]; then
+  rm -rf "${REPORT_FILE_PATH}"
 fi
 
-if [[ $option_m ]]; then
-  MAXDEPTH="$(($option_m + 1))"
+if [[ ${option_m:=} ]]; then
+  MAXDEPTH="$((${option_m:=} + 1))"
 fi
 
-if [[ $option_L ]]; then
+if [[ ${option_L:=} ]]; then
   INCLUDE_LINKS="-L"
 fi
 
-if [[ $option_c ]]; then
+if [[ ${option_c:=} ]]; then
   STAT="--stat"
 fi
 
 ## If -d flag is there, use its value for the since
-if [[ $option_d ]] && [[ $option_d -ne 0 ]]; then
+if [[ ${option_d:=} ]] && [[ $option_d -ne 0 ]]; then
   SINCE="$option_d days ago"
 else
   ## -d flag is not there, go on with the normal processing
-  WEEKSTART="$(cut -d '-' -f 1 <<< "$option_w")"
+  WEEKSTART="$(cut -d '-' -f 1 <<< "${option_:=w}")"
   WEEKSTART=${WEEKSTART:="Mon"}
 
-  WEEKEND="$(cut -d '-' -f 2 <<< "$option_w")"
+  WEEKEND="$(cut -d '-' -f 2 <<< "${option_w:=}")"
   WEEKEND=${WEEKEND:="Fri"}
 
   ## In case it is the start of week, we need to
@@ -203,20 +207,20 @@ else
 fi
 
 ## If -u flag is there, use its value for the until
-if [[ $option_u ]] && [[ $option_u -ne 0 ]]; then
+if [[ ${option_u:=} ]] && [[ $option_u -ne 0 ]]; then
   UNTIL_OPT="--until=\"$option_u days ago\""
-elif [[ $option_B ]]; then
+elif [[ ${option_B:=} ]]; then
   UNTIL_OPT="--until=\"$option_B\""
 fi
 
-if [[ $option_A ]]; then
+if [[ ${option_A:=} ]]; then
   AFTER_OPT="--after=\"$option_A\""
 fi
 
 GIT_DATE_FORMAT=${option_D:-relative}
 
 # For when the command has been run in a non-repo directory
-if [[ $option_F || ! -d ".git" || -f ".git" ]]; then
+if [[ ${option_F:=} || ! -d ".git" || -f ".git" ]]; then
   BASE_DIR=$(pwd)
   # Set delimiter to newline for the loop
   IFS=$'\n'
@@ -237,7 +241,7 @@ fi
 # we might be sitting inside a git repo
 if [[ -z ${PROJECT_DIRS} ]]; then
   ROOT_DIR_COMMAND="git rev-parse --show-toplevel"
-  PROJECT_ROOT=$(eval ${ROOT_DIR_COMMAND} 2> /dev/null)
+  PROJECT_ROOT=$(eval "${ROOT_DIR_COMMAND}" 2> /dev/null)
 
   if [[ -z ${PROJECT_ROOT} ]]; then
     echo "${YELLOW}You must be inside a git repository!${NORMAL}"
@@ -251,19 +255,19 @@ fi
 IFS=$'\n'
 for DIR in ${PROJECT_DIRS}; do
   PROJECT_DIR=$(dirname "$DIR")
-  cd "$PROJECT_DIR"
+  cd "$PROJECT_DIR" || exit
   CUR_DIR=$(pwd)
   BASENAME=$(basename "$CUR_DIR")
 
   # continue if not a git directory
   if [[ ! -d ".git" || -f ".git" ]]; then
-    cd ${BASE_DIR}
+    cd "${BASE_DIR}" || exit
     continue
   fi
 
   AUTHOR=$(git config user.name)
 
-  if [[ $option_a ]]; then
+  if [[ ${option_a:=} ]]; then
     # In case the parameter
     if [[ $option_a = 'all' ]]; then
       AUTHOR=".*"
@@ -273,7 +277,7 @@ for DIR in ${PROJECT_DIRS}; do
   fi
 
   GIT_BRANCH_FILTER="--all"
-  if [[ $option_b ]]; then
+  if [[ ${option_b:=} ]]; then
     GIT_BRANCH_FILTER="--first-parent $option_b"
   fi
 
@@ -293,6 +297,6 @@ for DIR in ${PROJECT_DIRS}; do
 
   runStandup
 
-  cd ${BASE_DIR}
+  cd "${BASE_DIR}" || exit
 done
 unset IFS
