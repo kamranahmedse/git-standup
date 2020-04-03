@@ -13,5 +13,4 @@ cd "$root"
   # remove duplicates from .sh + shebang
   # 2 space indentation, allow binary ops (`&&`, `||`, etc.) to start lines,
   # indent switch cases & add spaces after redirect operators.
-  # `-d` exits with an error on diffs
-} | sort | uniq | xargs shfmt -i 2 -bn -ci -sr -d -w || exit 1
+} | sort | uniq | xargs shfmt -i 2 -bn -ci -sr -w || exit 1
