@@ -1,0 +1,17 @@
+#! /usr/bin/env bash
+
+set -euo pipefail
+
+root="$(git rev-parse --show-toplevel)"
+cd "$root"
+
+{
+  # `.sh` extension
+  git ls-files '*.sh'
+  # `#! usr/bin/env bash` shebang
+  git grep -l '^\(#! */usr/bin/env bash\|#! */bin/bash\)$'
+  # remove duplicates from .sh + shebang
+  # 2 space indentation, allow binary ops (`&&`, `||`, etc.) to start lines,
+  # indent switch cases & add spaces after redirect operators.
+  # `-d` exits with an error on diffs
+} | sort | uniq | xargs shfmt -i 2 -bn -ci -sr -d || exit 1

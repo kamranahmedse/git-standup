@@ -8,7 +8,7 @@ MANDIR ?= $(DATAROOTDIR)/man
 # files that need mode 755
 EXEC_FILES = git-standup
 
-.PHONY: all install uninstall
+.PHONY: check all install uninstall shellcheck shfmt
 
 all:
 	@echo "usage: make install"
@@ -22,3 +22,11 @@ uninstall:
 	test -d $(BINDIR) && \
 	cd $(BINDIR) && \
 	rm -f $(EXEC_FILES)
+
+check: shellcheck shfmt
+
+shellcheck:
+	./actions/shellcheck
+
+shfmt:
+	./actions/shfmt
