@@ -7,7 +7,7 @@ function usage() {
 Usage:
   git standup [-a <author name>] [-w <weekstart-weekend>] [-d <since-days-ago>] [-u <until-days-ago>] [-m <max-dir-depth>] [-g] [-h] [-f] [-c]
 
-  -a      - Specify author to restrict search to
+  -a      - Specify author to restrict search to or use "all" to see all authors
   -b      - Specify branch to restrict search to (unset: all branches, "\$remote/\$branch" to include fetches)
   -w      - Specify weekday range to limit search to
   -m      - Specify the depth of recursive directory search
