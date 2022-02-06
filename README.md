@@ -4,11 +4,11 @@
 
 A little tool that I always wanted for myself. I work on several repositories on daily basis and it is mostly difficult for me to remember where I left off in each one of them. `git-standup` helps me with running standups and keeping track of what I have been doing. By default it gives you the most common usage i.e. shows you commits from the last working day in the current directory and the directories below current level plus it comes with several options to modify how it behaves.
 
-
 ## Requirements
+
 The only requirement is having good commit messages :)
 
-![](https://i.imgur.com/yL03GkB.png)
+!["When pushed, this commit will DO {commit_message}" => Do not use WIP, Fix, Update...](https://i.imgur.com/yL03GkB.png)
 
 ## Install
 
@@ -21,6 +21,7 @@ You can install `git-standup` using one of the options listed below
 | brew | `brew update && brew install git-standup` |
 | aur | `pacaur -S git-standup-git` |
 | manual | Clone and run `make install` |
+| git-bash | For Windows : `curl -L https://raw.githubusercontent.com/kamranahmedse/git-standup/master/windows-installer.sh \| sh` |
 
 ## Usage
 
@@ -87,16 +88,17 @@ For the basic usage, all you have to do is run `git standup` in a repository or 
 To check all your personal commits from last working day, head to the project repository and run
 
 ```shell
-$ git standup
+git standup
 ```
 
 ![git standup](http://i.imgur.com/wyo4s9E.gif)
 
 ## Multiple Repository Usage
+
 Open a directory having multiple repositories and run
 
 ```shell
-$ git standup
+git standup
 ```
 
 ![git standup](http://i.imgur.com/4xmkA49.gif)
@@ -110,7 +112,7 @@ level deep. If you want to increase that, use the `-m` switch.
 If the base directory is a git repository you can use the `-F` switch to force the recursion.
 
 ```shell
-$ git standup -m 3
+git standup -m 3
 ```
 
 ## Checking someone else's commits
@@ -135,7 +137,7 @@ git standup -a'^(?!(renovate\[bot\]))'
 If you want to find out someone else's commits do
 
 ```shell
-$ git standup -a "all"
+git standup -a "all"
 ```
 
 ## Commits from `n` days ago
@@ -168,6 +170,7 @@ git standup -A "2018-09-20 00:00:00" -B "2018-09-30 23:59"
 ## Show Diff-stat
 
 Add `-c` flag to show the diff-stat for each of the commits in standup results
+
 ```shell
 git standup -c
 ```
@@ -177,7 +180,7 @@ git standup -c
 Add `-g` flag to check the GPG info
 
 ```shell
-$ git standup -g
+git standup -g
 ```
 
 ![GPG Info](http://i.imgur.com/bwJzPft.gif)
@@ -216,7 +219,7 @@ If you want to restrict the standup to some paths, you can whitelist them by add
 
 And you want the `git-standup` to show logs for only `project-a` and `project-b`, you can do that by creating a `.git-standup-whitelist` file under the `Workspace` directory with the below contents and it will only consider these directories for the standup
 
-```
+```text
 project-a
 project-b
 ```
@@ -228,7 +231,7 @@ By default, it considers that the work week starts on Monday and ends on Friday.
 If you want to change this, like I want because here in Dubai working days are normally Sunday to Thursday, you will have to do the following
 
 ```shell
-$ git standup -w "SUN-THU"
+git standup -w "SUN-THU"
 ```
 
 ## Fetch commits before showing standup
@@ -238,7 +241,7 @@ If you have many repositories that you want to generate a standup for, it may be
 If you would like to automatically run `git fetch --all` before printing the standup, you can add the `-f` flag, as show below
 
 ```shell
-$ git standup -f
+git standup -f
 ```
 
 ## Mixing options
