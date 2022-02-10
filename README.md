@@ -1,8 +1,8 @@
 # git-standup
 
-> Recall what you did on the last working day ..or be nosy and find what someone else did.
+> Recall what you did on the last working day or be nosy and find what someone else did.
 
-A little tool that I always wanted for myself. I work on several repositories on daily basis and it is mostly difficult for me to remember where I left off in each one of them. `git-standup` helps me with running standups and keeping track of what I have been doing. By default it gives you the most common usage i.e. shows you commits from the last working day in the current directory and the directories below current level plus it comes with several options to modify how it behaves.
+A little tool that I always wanted for myself. I work on several repositories on daily basis, and it is mostly difficult for me to remember where I left off in each one of them. `git-standup` helps me with running standups and keeping track of what I have been doing. By default, it gives you the most common usage i.e. shows you commits from the last working day in the current directory and the directories below current level plus it comes with several options to modify how it behaves.
 
 
 ## Requirements
@@ -14,17 +14,17 @@ The only requirement is having good commit messages :)
 
 You can install `git-standup` using one of the options listed below
 
-| Source | Command |
-| --- | --- |
-| curl | `curl -L https://raw.githubusercontent.com/kamranahmedse/git-standup/master/installer.sh \| sudo sh` |
-| npm | `npm install -g git-standup` |
-| brew | `brew update && brew install git-standup` |
-| aur | `pacaur -S git-standup-git` |
-| manual | Clone and run `make install` |
+| Source | Command                                                                                    |
+|--------|--------------------------------------------------------------------------------------------|
+| curl   | `curl -L https://raw.githubusercontent.com/kamranahmedse/git-standup/master/installer.sh \ | sudo sh` |
+| npm    | `npm install -g git-standup`                                                               |
+| brew   | `brew update && brew install git-standup`                                                  |
+| aur    | `pacaur -S git-standup-git`                                                                |
+| manual | Clone and run `make install`                                                               |
 
 ## Usage
 
-Simply run it in your project directory and it will give you the output from the last working day
+Simply run it in your project directory, and it will give you the output from the last working day
 
 ```shell
 git standup
@@ -59,26 +59,26 @@ git standup [-a <author name>]
 
 Here is the detail for each of the options
 
-| Option | Description |
-| --- | --- |
-| a | Specify author to restrict search to e.g. `-a "Kamran Ahmed"` or `-a "all"` |
-| b | Specify branch to restrict search to (unset: all branches, "\$remote/\$branch" to include fetches) |
-| w | Specify week start and end days e.g. in UAE weekdays are from Sunday to Thursday so you can do `-w SUN-THU`|
-| m | Specify the depth of recursive directory search e.g. `-m 3` defaults to two |
-| F | Force recursion up to speficied depth even when git repository found earlier |
-| d | Specify the number of days back to include e.g. `-d 30` to get for a month |
-| u | Specify the number of days back till which standup should run e.g. `-u 3` |
-| L | Toggle inclusion of symbolic links in recursive directory search |
-| D | Specify the date format for "git log" (default: relative) [possible values](https://git-scm.com/docs/git-log#git-log---dateltformatgt) |
-| A | Show the commits till after the given date
-| B | Show the commits till before the given date
-| h | Display the help screen |
-| g | Show if commit is GPG signed (G) or not (N) |
-| f | Fetch the latest commits beforehand |
-| s | Silences the no activity message (useful when running in a directory having many repositories) |
-| c | Show diff-stat for every matched commit
-| r | Generates the standup report file `git-standup-report.txt` in the current directory |
-| R | Display the author date instead of the committer date |
+| Option | Description                                                                                                                            |
+|--------|----------------------------------------------------------------------------------------------------------------------------------------|
+| a      | Specify author to restrict search to e.g. `-a "Kamran Ahmed"` or `-a "all"`                                                            |
+| b      | Specify branch to restrict search to (unset: all branches, "\$remote/\$branch" to include fetches)                                     |
+| w      | Specify week start and end days e.g. in UAE weekdays are from Sunday to Thursday so you can do `-w SUN-THU`                            |
+| m      | Specify the depth of recursive directory search e.g. `-m 3` defaults to two                                                            |
+| F      | Force recursion up to specified depth even when git repository found earlier                                                           |
+| d      | Specify the number of days back to include e.g. `-d 30` to get for a month                                                             |
+| u      | Specify the number of days back till which standup should run e.g. `-u 3`                                                              |
+| L      | Toggle inclusion of symbolic links in recursive directory search                                                                       |
+| D      | Specify the date format for "git log" (default: relative) [possible values](https://git-scm.com/docs/git-log#git-log---dateltformatgt) |
+| A      | Show the commits till after the given date                                                                                             |
+| B      | Show the commits till before the given date                                                                                            |
+| h      | Display the help screen                                                                                                                |
+| g      | Show if commit is GPG signed (G) or not (N)                                                                                            |
+| f      | Fetch the latest commits beforehand                                                                                                    |
+| s      | Silences the no activity message (useful when running in a directory having many repositories)                                         |
+| c      | Show diff-stat for every matched commit                                                                                                |
+| r      | Generates the standup report file `git-standup-report.txt` in the current directory                                                    |
+| R      | Display the author date instead of the committer date                                                                                  |
 
 For the basic usage, all you have to do is run `git standup` in a repository or a folder containing multiple repositories
 
@@ -105,7 +105,7 @@ This will show you all your commits since the last working day in all the reposi
 
 ## Directory depth
 
-By default the script searches only in the current directory or one
+By default, the script searches only in the current directory or one
 level deep. If you want to increase that, use the `-m` switch.
 If the base directory is a git repository you can use the `-F` switch to force the recursion.
 
@@ -122,7 +122,7 @@ If you want to find out someone else's commits do
 $ git standup -a "John Doe"
 ```
 
-Apart fromm restrict to commits from a certain user, you can also use `-a` flag to avoid certain users. You can do that if you enable perl regexp in your git installation `git config --global grep.patternType perl`, and use the author filter like below:
+Apart fromm restrict to commit from a certain user, you can also use `-a` flag to avoid certain users. You can do that if you enable perl regexp in your git installation `git config --global grep.patternType perl`, and use the author filter like below:
 
 ```shell
 git standup -a'^(?!(renovate\[bot\]))'
@@ -195,7 +195,7 @@ $ git standup -D relative
 
 ## Branch Filter
 
-Use of `-b foobar` option, which restricts returned results to commits present on branch `foobar`. Supports arbitrary branch specs, so for example `-b origin/foobar` would include data present on the remote that has not been merged locally.
+Use of `-b foobar` option, which restricts returned results to commit present on branch `foobar`. Supports arbitrary branch specs, so for example `-b origin/foobar` would include data present on the remote that has not been merged locally.
 
 ```shell
 # Use develop branch for standup
@@ -214,7 +214,7 @@ If you want to restrict the standup to some paths, you can whitelist them by add
     │   └── ...                # etc.
     └── ...
 
-And you want the `git-standup` to show logs for only `project-a` and `project-b`, you can do that by creating a `.git-standup-whitelist` file under the `Workspace` directory with the below contents and it will only consider these directories for the standup
+And you want the `git-standup` to show logs for only `project-a` and `project-b`, you can do that by creating a `.git-standup-whitelist` file under the `Workspace` directory with the below contents, and it will only consider these directories for the standup
 
 ```
 project-a
@@ -243,7 +243,7 @@ $ git standup -f
 
 ## Mixing options
 
-Of course you can mix the options together but please note that if you provide the number of days, it will override the weekdays configuration (`MON-FRI`) and will show you the commits specifically from `n` days ago.
+Of course, you can mix the options together but please note that if you provide the number of days, it will override the weekdays configuration (`MON-FRI`) and will show you the commits specifically from `n` days ago.
 
 ```shell
 # Show all the John Doe's commits from 5 days ago
