@@ -46,7 +46,12 @@ function colored() {
     GIT_PRETTY_DATE="%ad"
   fi
 
-  GIT_PRETTY_FORMAT="%Cred%h%Creset - %s %Cgreen($GIT_PRETTY_DATE) %C(bold blue)<%an>%Creset"
+  if [[ $GIT_LOG = "shortlog" ]]; then
+    GIT_PRETTY_FORMAT="%Cred%h%Creset - %s %Cgreen($GIT_PRETTY_DATE) %Creset"
+  else 
+    GIT_PRETTY_FORMAT="%Cred%h%Creset - %s %Cgreen($GIT_PRETTY_DATE) %C(bold blue)<%an>%Creset"
+  fi
+  
   COLOR=always
 
   if [[ ${option_g:=} ]]; then
@@ -71,7 +76,12 @@ function uncolored() {
     GIT_PRETTY_DATE="%ad"
   fi
 
-  GIT_PRETTY_FORMAT="%h - %s ($GIT_PRETTY_DATE) <%an>"
+  if [[ $GIT_LOG = "shortlog" ]]; then
+    GIT_PRETTY_FORMAT="%h - %s ($GIT_PRETTY_DATE)"
+  else 
+    GIT_PRETTY_FORMAT="%h - %s ($GIT_PRETTY_DATE) <%an>"
+  fi
+
   COLOR=never
 
   if [[ $option_g ]]; then
@@ -124,9 +134,9 @@ function runStandup() {
   fi
 }
 
-while getopts "hgfsd:u:a:w:m:D:A:B:LrcRFb:" opt; do
+while getopts "hgfsd:u:a:w:m:D:A:B:LrcRFGb:" opt; do
   case $opt in
-    h | d | u | a | w | m | g | D | f | s | L | r | A | B | c | R | F | b)
+    h | d | u | a | w | m | g | D | f | s | L | r | A | B | c | R | F | G | b)
       declare "option_$opt=${OPTARG:-0}"
       ;;
     \?)
@@ -148,6 +158,21 @@ fi
 if [[ ${option_h:=} ]]; then
   usage
   exit 0
+fi
+
+AUTHOR=$(git config user.name)
+GIT_LOG="log"
+
+if [[ ${option_a:=} ]]; then
+  # In case the parameter
+  if [[ $option_a = 'all' ]]; then
+    AUTHOR=".*"
+    if [[ ${option_G:=} ]]; then
+      GIT_LOG="shortlog"
+    fi
+  else
+    AUTHOR="$option_a"
+  fi
 fi
 
 # Use colors, but only if connected to a terminal, and that terminal supports them.
@@ -263,25 +288,14 @@ for DIR in ${PROJECT_DIRS}; do
   if [[ ! -d ".git" || -f ".git" ]]; then
     cd "${BASE_DIR}" || exit
     continue
-  fi
-
-  AUTHOR=$(git config user.name)
-
-  if [[ ${option_a:=} ]]; then
-    # In case the parameter
-    if [[ $option_a = 'all' ]]; then
-      AUTHOR=".*"
-    else
-      AUTHOR="$option_a"
-    fi
-  fi
+  fi  
 
   GIT_BRANCH_FILTER="--all"
   if [[ ${option_b:=} ]]; then
     GIT_BRANCH_FILTER="--first-parent $option_b"
   fi
 
-  GIT_LOG_COMMAND="git --no-pager log \
+  GIT_LOG_COMMAND="git --no-pager ${GIT_LOG} \
     ${GIT_BRANCH_FILTER}
     --no-merges
     --since=\"$SINCE\"
