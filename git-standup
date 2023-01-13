@@ -11,7 +11,7 @@ Usage:
   -b      - Specify branch to restrict search to (unset: all branches, "\$remote/\$branch" to include fetches)
   -w      - Specify weekday range to limit search to
   -m      - Specify the depth of recursive directory search
-  -F      - Force recursion up to speficied depth
+  -F      - Force recursion up to specified depth
   -L      - Toggle inclusion of symbolic links in recursive directory search
   -d      - Specify the number of days back to include
   -u      - Specify the number of days back until this day
