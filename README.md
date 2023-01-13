@@ -65,7 +65,7 @@ Here is the detail for each of the options
 | b | Specify branch to restrict search to (unset: all branches, "\$remote/\$branch" to include fetches) |
 | w | Specify week start and end days e.g. in UAE weekdays are from Sunday to Thursday so you can do `-w SUN-THU`|
 | m | Specify the depth of recursive directory search e.g. `-m 3` defaults to two |
-| F | Force recursion up to speficied depth even when git repository found earlier |
+| F | Force recursion up to specified depth even when git repository found earlier |
 | d | Specify the number of days back to include e.g. `-d 30` to get for a month |
 | u | Specify the number of days back till which standup should run e.g. `-u 3` |
 | L | Toggle inclusion of symbolic links in recursive directory search |
