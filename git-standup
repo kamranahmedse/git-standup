@@ -124,6 +124,64 @@ function runStandup() {
   fi
 }
 
+function str2ymd() {
+  local str="$1"
+  date --date="$str" +%Y-%m-%d
+}
+
+function setLogCommandForAuthorDate() {
+  # Unfortunately, there is no way to do this just with git log right now, so we
+  # need to do it ourselves.
+
+  # Convert until, after, and since into actual date strings
+  if [ -n "$UNTIL_OPT_VAL" ]; then
+    AWK_UNTIL="\$1 <= \"$(str2ymd "$UNTIL_OPT_VAL")\""
+  else
+    AWK_UNTIL="1"
+  fi
+
+  if [ -n "$AFTER_OPT_VAL" ]; then
+    AWK_SINCE="\$1 >= \"$(str2ymd "$AFTER_OPT_VAL")\""
+  elif [ -n "$SINCE" ]; then
+    AWK_SINCE="\$1 >= \"$(str2ymd "$SINCE")\""
+  else
+    AWK_SINCE="1"
+  fi
+
+  # First part produces a log of all commits by the author with a the author
+  # date and commit hash.
+
+  # Second part uses awk to filter out the ones that aren't within the user
+  # defined dates.
+
+  # Third part takes those commit hashes and gives us the pretty git log for
+  # them if the first 2 parts resulted in any commits. Otherwise if you pass no
+  # commits to the 3rd part, it will always print out the HEAD commit.
+  GIT_LOG_COMMAND="out=\"\$(
+      git log
+      --pretty='%aI %H'
+      --no-merges
+      --author=\"$AUTHOR\"
+      $GIT_BRANCH_FILTER
+      |
+      awk '$AWK_SINCE && $AWK_UNTIL { print \$2 }'
+    )\";
+
+    if [ -n \"\$out\" ]; then
+      echo \"\$out\" |
+      git --no-pager log
+      --no-walk
+      --stdin
+      --abbrev-commit
+      --oneline
+      --pretty=format:'$GIT_PRETTY_FORMAT'
+      --date='$GIT_DATE_FORMAT'
+      --color=$COLOR
+      ${STAT};
+    fi;
+  "
+}
+
 while getopts "hgfsd:u:a:w:m:D:A:B:LrcRFb:" opt; do
   case $opt in
     h | d | u | a | w | m | g | D | f | s | L | r | A | B | c | R | F | b)
@@ -208,13 +266,16 @@ fi
 
 ## If -u flag is there, use its value for the until
 if [[ ${option_u:=} ]] && [[ $option_u -ne 0 ]]; then
-  UNTIL_OPT="--until=\"$option_u days ago\""
+  UNTIL_OPT_VAL="$option_u days ago"
+  UNTIL_OPT="--until=\"$UNTIL_OPT_VAL\""
 elif [[ ${option_B:=} ]]; then
-  UNTIL_OPT="--until=\"$option_B\""
+  UNTIL_OPT_VAL="$option_B"
+  UNTIL_OPT="--until=\"$UNTIL_OPT_VAL\""
 fi
 
 if [[ ${option_A:=} ]]; then
-  AFTER_OPT="--after=\"$option_A\""
+  AFTER_OPT_VAL="$option_A"
+  AFTER_OPT="--after=\"$AFTER_OPT_VAL\""
 fi
 
 GIT_DATE_FORMAT=${option_D:-relative}
@@ -281,19 +342,25 @@ for DIR in ${PROJECT_DIRS}; do
     GIT_BRANCH_FILTER="--first-parent $option_b"
   fi
 
-  GIT_LOG_COMMAND="git --no-pager log \
-    ${GIT_BRANCH_FILTER}
-    --no-merges
-    --since=\"$SINCE\"
-    ${UNTIL_OPT}
-    ${AFTER_OPT}
-    --author=\"$AUTHOR\"
-    --abbrev-commit
-    --oneline
-    --pretty=format:'$GIT_PRETTY_FORMAT'
-    --date='$GIT_DATE_FORMAT'
-    --color=$COLOR
-    ${STAT}"
+  if [[ $option_R ]]; then
+    # If R option, then we will filter the output by author date as well as
+    # display it with author date
+    setLogCommandForAuthorDate
+  else
+    GIT_LOG_COMMAND="git --no-pager log
+      ${GIT_BRANCH_FILTER}
+      --no-merges
+      --since=\"$SINCE\"
+      ${UNTIL_OPT}
+      ${AFTER_OPT}
+      --author=\"$AUTHOR\"
+      --abbrev-commit
+      --oneline
+      --pretty=format:'$GIT_PRETTY_FORMAT'
+      --date='$GIT_DATE_FORMAT'
+      --color=$COLOR
+      ${STAT}"
+  fi
 
   runStandup
 
