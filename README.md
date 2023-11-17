@@ -165,6 +165,56 @@ git standup -B "2018-10-01 00:00"
 git standup -A "2018-09-20 00:00:00" -B "2018-09-30 23:59"
 ```
 
+## Commits between `m` and `n` days ago (date ranges)
+
+You can also combine the `-u`/`-A` and `-d`/`-B` flags to select a range of days, including a range of a single day:
+- The value of `-u` must always be less than or equal to the value of `-d`.
+- The value of `-A` must always be sooner than or equal to the value of `-B`.
+- Using `-u`/`-A` by itself without `-d`/`-B` will give you zero results.
+
+For example, if today is Monday 2020-05-16 and you want a log for the previous Friday 2020-05-15 (3 days ago), you can use:
+
+```shell
+# Saturday was 2 days ago, Friday was 3 days ago
+# Using -u and -d means "between 2 days ago and 3 days ago"
+# Shows commits for Friday
+git standup -u 2 -d 3
+
+# Only using -d means "between now and 3 days ago"
+# Shows commits for Friday, Saturday, and Sunday
+git standup -d 3
+
+# Same results as above
+git standup -u 0 -d 3
+
+# This also works with the -A and -B flags
+
+# Between Friday 2020-05-15 and Saturday 2020-05-16
+git standup -A "2020-05-15" -B "2020-05-16"
+
+# Between today and 2020-05-16
+git standup -B "2020-05-16"
+
+# Same result as above
+git standup -A "2020-05-18" -B "2020-05-16"
+```
+
+| Date                             	| 2020-05-18<br>(Today, Monday) 	| 2020-05-17<br>(Sunday) 	| 2020-05-16<br>(Saturday) 	| 2020-05-15<br>(Friday) 	| 2020-05-14<br>(Thursday) 	| 2020-05-13<br>(Wednesday) 	| 2020-05-12<br>(Tuesday) 	|
+|----------------------------------	|-------------------------------	|------------------------	|--------------------------	|------------------------	|--------------------------	|---------------------------	|-------------------------	|
+| Index (i days ago)               	| 0                             	| 1                      	| 2                        	| 3                      	| 4                        	| 5                         	| 6                       	|
+| -A (from date) [exclusive]       	|                               	|                        	| 2020-05-16               	|                        	|                          	|                           	|                         	|
+| -B (to date) [inclusive]         	|                               	|                        	|                          	| 2020-05-15             	|                          	|                           	|                         	|
+| -u (from m days ago) [exclusive] 	|                               	|                        	| 2                        	|                        	|                          	|                           	|                         	|
+| -d (to n days ago) [inclusive]   	|                               	|                        	|                          	| 3                      	|                          	|                           	|                         	|
+| Selected days                    	|                               	|                        	|                          	| X                      	|                          	|                           	|                         	|
+
+| Date                           	| 2020-05-18<br>(Today, Monday) 	| 2020-05-17<br>(Sunday) 	| 2020-05-16<br>(Saturday) 	| 2020-05-15<br>(Friday) 	| 2020-05-14<br>(Thursday) 	| 2020-05-13<br>(Wednesday) 	| 2020-05-12<br>(Tuesday) 	|
+|--------------------------------	|-------------------------------	|------------------------	|--------------------------	|------------------------	|--------------------------	|---------------------------	|-------------------------	|
+| Index (i days ago)             	| 0                             	| 1                      	| 2                        	| 3                      	| 4                        	| 5                         	| 6                       	|
+| -B (to date) [inclusive]       	|                               	|                        	|                          	| 2020-05-15             	|                          	|                           	|                         	|
+| -d (to n days ago) [inclusive] 	|                               	|                        	|                          	| 3                      	|                          	|                           	|                         	|
+| Selected days                  	|                               	| X                      	| X                        	| X                      	|                          	|                           	|                         	|
+
 ## Show Diff-stat
 
 Add `-c` flag to show the diff-stat for each of the commits in standup results
