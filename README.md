@@ -122,7 +122,7 @@ If you want to find out someone else's commits do
 $ git standup -a "John Doe"
 ```
 
-Apart fromm restrict to commits from a certain user, you can also use `-a` flag to avoid certain users. You can do that if you enable perl regexp in your git installation `git config --global grep.patternType perl`, and use the author filter like below:
+Apart from restrict to commits from a certain user, you can also use `-a` flag to avoid certain users. You can do that if you enable perl regexp in your git installation `git config --global grep.patternType perl`, and use the author filter like below:
 
 ```shell
 git standup -a'^(?!(renovate\[bot\]))'
