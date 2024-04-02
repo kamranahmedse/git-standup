@@ -260,7 +260,8 @@ for DIR in ${PROJECT_DIRS}; do
   BASENAME=$(basename "$CUR_DIR")
 
   # continue if not a git directory
-  if [[ ! -d ".git" || -f ".git" ]]; then
+	VALID_GIT_DIR=$(git rev-parse --git-dir 2>/dev/null)
+	if [[ -z $VALID_GIT_DIR ]]; then
     cd "${BASE_DIR}" || exit
     continue
   fi
