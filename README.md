@@ -69,7 +69,7 @@ Here is the detail for each of the options
 | d | Specify the number of days back to include e.g. `-d 30` to get for a month |
 | u | Specify the number of days back till which standup should run e.g. `-u 3` |
 | L | Toggle inclusion of symbolic links in recursive directory search |
-| D | Specify the date format for "git log" (default: relative) [possible values](https://git-scm.com/docs/git-log#git-log---dateltformatgt) |
+| D | Specify the date format for "git log" (default: relative) [possible values](https://git-scm.com/docs/git-log#Documentation/git-log.txt---dateltformatgt) |
 | A | Show the commits till after the given date
 | B | Show the commits till before the given date
 | h | Display the help screen |
